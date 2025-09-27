@@ -450,6 +450,9 @@
             font-weight: 600;
             font-size: 14px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .logout-btn:hover {
@@ -1262,8 +1265,9 @@
                     <div class="user-name" id="userName">المستخدم</div>
                 </div>
                 
-                <button class="logout-btn" onclick="logout()">
+                <button class="logout-btn" onclick="logout()" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i>
+                    <span id="logoutText">تسجيل الخروج</span>
                 </button>
             </div>
         </div>
@@ -2040,7 +2044,8 @@
                 'add-export-btn': t.addExport,
                 'add-note-btn': t.addNote,
                 'add-employee-btn': t.addEmployee,
-                'add-user-btn': t.addUser
+                'add-user-btn': t.addUser,
+                'logoutText': t.logout
             };
             
             // Apply translations
@@ -2050,6 +2055,9 @@
                     element.textContent = translatableElements[id];
                 }
             });
+            
+            // Update storage status text
+            updateStorageStatus();
             
             // Update navigation items
             updateNavigationText();

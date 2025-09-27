@@ -1,15 +1,25 @@
-// Initialize default data if not exists
-function initializeDefaultData() {
-    // Default imports
-    if (!localStorage.getItem('maniverdi_imports')) {
-        const imports = [
+// Initialize default data if not exists using cloud storage
+async function initializeDefaultData() {
+    // Wait for cloudStorage to be available
+    if (!window.cloudStorage) {
+        setTimeout(initializeDefaultData, 100);
+        return;
+    }
+    
+    try {
+        // Check if we already have data
+        const imports = await window.cloudStorage.loadData('imports');
+        if (imports.length > 0) return; // Already initialized
+        
+        // Default imports
+        const defaultImports = [
             {
                 _id: 'imp_1',
                 productName: 'القمح المستورد',
                 price: 15000,
                 notes: 'استيراد من أوكرانيا',
                 createdAt: '2024-09-01',
-                createdTime: '09:30'
+                createdDateTime: '2024-09-01T09:30'
             },
             {
                 _id: 'imp_2',
@@ -17,22 +27,20 @@ function initializeDefaultData() {
                 price: 8500,
                 notes: 'استيراد من الهند',
                 createdAt: '2024-09-10',
-                createdTime: '14:15'
+                createdDateTime: '2024-09-10T14:15'
             }
         ];
-        localStorage.setItem('maniverdi_imports', JSON.stringify(imports));
-    }
-
-    // Default exports
-    if (!localStorage.getItem('maniverdi_exports')) {
-        const exports = [
+        await window.cloudStorage.saveData('imports', defaultImports);
+        
+        // Default exports
+        const defaultExports = [
             {
                 _id: 'exp_1',
                 productName: 'التمر العراقي',
                 price: 12000,
                 notes: 'تصدير إلى دول الخليج',
                 createdAt: '2024-09-05',
-                createdTime: '11:00'
+                createdDateTime: '2024-09-05T11:00'
             },
             {
                 _id: 'exp_2',
@@ -40,48 +48,41 @@ function initializeDefaultData() {
                 price: 9500,
                 notes: 'تصدير إلى تركيا',
                 createdAt: '2024-09-12',
-                createdTime: '16:30'
+                createdDateTime: '2024-09-12T16:30'
             }
         ];
-        localStorage.setItem('maniverdi_exports', JSON.stringify(exports));
-    }
-
-    // Default employees
-    if (!localStorage.getItem('maniverdi_employees')) {
-        const employees = [
+        await window.cloudStorage.saveData('exports', defaultExports);
+        
+        // Default employees
+        const defaultEmployees = [
             {
                 _id: 'emp_1',
                 name: 'أحمد محمد علي',
                 jobTitle: 'مدير العمليات',
-                monthlySalary: 5000,
+                monthlySalary: 500000,
                 startDate: '2024-01-15',
-                startTime: '08:00',
                 active: true
             },
             {
                 _id: 'emp_2',
                 name: 'فاطمة حسن',
                 jobTitle: 'محاسبة',
-                monthlySalary: 3500,
+                monthlySalary: 350000,
                 startDate: '2024-03-01',
-                startTime: '09:00',
                 active: true
             }
         ];
-        localStorage.setItem('maniverdi_employees', JSON.stringify(employees));
-    }
-
-    // Default notes
-    if (!localStorage.getItem('maniverdi_notes')) {
-        const notes = [
+        await window.cloudStorage.saveData('employees', defaultEmployees);
+        
+        // Default notes
+        const defaultNotes = [
             {
                 _id: 'note_1',
                 title: 'اجتماع مع العملاء',
                 content: 'مراجعة العقود الجديدة وشروط التوريد',
                 category: 'مهم',
                 priority: 'عالي',
-                createdDate: '2024-09-27',
-                createdTime: '10:30'
+                createdDate: '2024-09-27'
             },
             {
                 _id: 'note_2',
@@ -89,22 +90,25 @@ function initializeDefaultData() {
                 content: 'تأكد من وصول الشحنة الجديدة من الهند',
                 category: 'مهمة',
                 priority: 'متوسط',
-                createdDate: '2024-09-26',
-                createdTime: '15:45'
+                createdDate: '2024-09-26'
             }
         ];
-        localStorage.setItem('maniverdi_notes', JSON.stringify(notes));
-    }
-
-    // Default users
-    if (!localStorage.getItem('maniverdi_users')) {
-        const users = [
-            { id: 2, username: 'iraq', password: 'iraq', role: 'superuser' },
-            { id: 3, username: 'mani', password: 'mani', role: 'user' }
-        ];
-        localStorage.setItem('maniverdi_users', JSON.stringify(users));
+        await window.cloudStorage.saveData('notes', defaultNotes);
+        
+        console.log('Default data initialized successfully with cloud storage');
+    } catch (error) {
+        console.error('Error initializing default data:', error);
+        // Fallback to empty data if error
+        await window.cloudStorage.saveData('imports', []);
+        await window.cloudStorage.saveData('exports', []);
+        await window.cloudStorage.saveData('employees', []);
+        await window.cloudStorage.saveData('notes', []);
     }
 }
 
-// Call initialization
-initializeDefaultData();
+// Auto-initialize when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeDefaultData);
+} else {
+    initializeDefaultData();
+}
