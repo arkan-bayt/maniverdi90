@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/maniverdi90/static/css/main.d7803118.css",
-    "main.js": "/maniverdi90/static/js/main.a8d86198.js",
+    "main.js": "/maniverdi90/static/js/main.355096cb.js",
     "index.html": "/maniverdi90/index.html",
     "main.d7803118.css.map": "/maniverdi90/static/css/main.d7803118.css.map",
-    "main.a8d86198.js.map": "/maniverdi90/static/js/main.a8d86198.js.map"
+    "main.355096cb.js.map": "/maniverdi90/static/js/main.355096cb.js.map"
   },
   "entrypoints": [
     "static/css/main.d7803118.css",
-    "static/js/main.a8d86198.js"
+    "static/js/main.355096cb.js"
   ]
 }
