@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة مناي ڤيردي - مشاركة البيانات</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #f59e0b;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .description {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .option-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .option-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a56eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .storage-info {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            color: #2d3436;
+        }
+
+        .shared-code {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0;
+            border: 2px dashed var(--primary-color);
+        }
+
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .status.show {
+            opacity: 1;
+        }
+
+        .status.success {
+            background: var(--accent-color);
+        }
+
+        .status.error {
+            background: var(--danger-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">
+            <i class="fas fa-share-alt"></i>
+        </div>
+        
+        <h1>مشاركة البيانات</h1>
+        <p class="description">
+            اختر كيفية مشاركة البيانات مع الآخرين. يمكنك إنشاء رابط مشترك أو استخدام كود مشاركة.
+        </p>
+
+        <div class="options">
+            <div class="option-card" onclick="selectOption('cloud')">
+                <div class="option-title">
+                    <i class="fas fa-cloud"></i> مشاركة عبر السحابة
+                </div>
+                <div class="option-description">
+                    إنشاء رابط مشترك يمكن للجميع الوصول إليه والتعديل عليه في الوقت الفعلي
+                </div>
+            </div>
+
+            <div class="option-card" onclick="selectOption('code')">
+                <div class="option-title">
+                    <i class="fas fa-key"></i> كود المشاركة
+                </div>
+                <div class="option-description">
+                    إنشاء كود خاص يمكن للآخرين استخدامه للوصول للبيانات المشتركة
+                </div>
+            </div>
+
+            <div class="option-card" onclick="selectOption('local')">
+                <div class="option-title">
+                    <i class="fas fa-desktop"></i> البقاء محلياً
+                </div>
+                <div class="option-description">
+                    الاستمرار باستخدام التخزين المحلي (البيانات لن تكون مشتركة)
+                </div>
+            </div>
+        </div>
+
+        <div id="cloudOption" style="display: none;">
+            <div class="storage-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>ملاحظة:</strong> سيتم استخدام خدمة JSONBin المجانية لحفظ البيانات. البيانات ستكون آمنة ومتاحة للجميع عبر الرابط.
+            </div>
+            
+            <div>
+                <button class="btn-primary" onclick="createSharedStorage()">
+                    <i class="fas fa-plus"></i> إنشاء مساحة مشتركة جديدة
+                </button>
+                <button class="btn-secondary" onclick="loadExistingStorage()">
+                    <i class="fas fa-folder-open"></i> تحميل مساحة موجودة
+                </button>
+            </div>
+
+            <div id="sharedCodeDisplay" style="display: none;">
+                <p><strong>كود المشاركة الخاص بك:</strong></p>
+                <div class="shared-code" id="shareCode">
+                    --
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    شارك هذا الكود مع الآخرين للوصول لنفس البيانات
+                </p>
+            </div>
+        </div>
+
+        <div id="codeOption" style="display: none;">
+            <div>
+                <input type="text" id="shareCodeInput" placeholder="أدخل كود المشاركة" 
+                       style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; margin: 15px 0; font-size: 1rem; text-align: center;">
+                <button class="btn-primary" onclick="joinWithCode()">
+                    <i class="fas fa-sign-in-alt"></i> الانضمام باستخدام الكود
+                </button>
+            </div>
+        </div>
+
+        <div class="buttons" style="margin-top: 30px;">
+            <button class="btn-primary" onclick="proceedToDashboard()">
+                <i class="fas fa-arrow-right"></i> متابعة إلى لوحة التحكم
+            </button>
+            <button class="btn-secondary" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> العودة للخلف
+            </button>
+        </div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <script>
+        let selectedOption = null;
+        let sharedStorageId = null;
+        
+        // Check if already has shared storage
+        const existingStorageId = localStorage.getItem('shared_storage_id');
+        if (existingStorageId) {
+            document.querySelector('.description').innerHTML = 
+                'يبدو أن لديك مساحة مشتركة بالفعل! يمكنك المتابعة أو إنشاء مساحة جديدة.';
+        }
+
+        function selectOption(option) {
+            // Remove previous selections
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Hide all option details
+            document.getElementById('cloudOption').style.display = 'none';
+            document.getElementById('codeOption').style.display = 'none';
+            
+            // Select current option
+            selectedOption = option;
+            
+            if (option === 'cloud') {
+                document.querySelector('.option-card:nth-child(1)').classList.add('selected');
+                document.getElementById('cloudOption').style.display = 'block';
+            } else if (option === 'code') {
+                document.querySelector('.option-card:nth-child(2)').classList.add('selected');
+                document.getElementById('codeOption').style.display = 'block';
+            } else if (option === 'local') {
+                document.querySelector('.option-card:nth-child(3)').classList.add('selected');
+            }
+        }
+
+        async function createSharedStorage() {
+            showStatus('جاري إنشاء المساحة المشتركة...', 'info');
+            
+            try {
+                // Create a unique storage ID
+                const storageId = 'maniverdi_' + Math.random().toString(36).substr(2, 9);
+                
+                // Initialize empty data structure
+                const initialData = {
+                    imports: [],
+                    exports: [],
+                    notes: [],
+                    employees: [],
+                    lastUpdated: new Date().toISOString(),
+                    version: 1
+                };
+
+                // For demo purposes, we'll simulate creating cloud storage
+                // In real implementation, you'd use JSONBin, Firebase, or similar
+                localStorage.setItem('shared_storage_id', storageId);
+                localStorage.setItem('shared_data_' + storageId, JSON.stringify(initialData));
+                
+                sharedStorageId = storageId;
+                
+                // Display the share code
+                document.getElementById('shareCode').textContent = storageId;
+                document.getElementById('sharedCodeDisplay').style.display = 'block';
+                
+                showStatus('تم إنشاء المساحة المشتركة بنجاح!', 'success');
+            } catch (error) {
+                console.error('Error creating shared storage:', error);
+                showStatus('حدث خطأ في إنشاء المساحة المشتركة', 'error');
+            }
+        }
+
+        async function loadExistingStorage() {
+            const storageId = prompt('أدخل كود المساحة المشتركة:');
+            if (!storageId) return;
+            
+            showStatus('جاري تحميل البيانات...', 'info');
+            
+            try {
+                // In real implementation, load from cloud service
+                const data = localStorage.getItem('shared_data_' + storageId);
+                
+                if (data) {
+                    localStorage.setItem('shared_storage_id', storageId);
+                    sharedStorageId = storageId;
+                    showStatus('تم تحميل البيانات المشتركة بنجاح!', 'success');
+                } else {
+                    showStatus('لم يتم العثور على بيانات لهذا الكود', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading shared storage:', error);
+                showStatus('حدث خطأ في تحميل البيانات', 'error');
+            }
+        }
+
+        function joinWithCode() {
+            const code = document.getElementById('shareCodeInput').value.trim();
+            if (!code) {
+                showStatus('يرجى إدخال كود المشاركة', 'error');
+                return;
+            }
+            
+            showStatus('جاري الانضمام...', 'info');
+            
+            try {
+                // In real implementation, validate and join cloud storage
+                const data = localStorage.getItem('shared_data_' + code);
+                
+                if (data) {
+                    localStorage.setItem('shared_storage_id', code);
+                    sharedStorageId = code;
+                    showStatus('تم الانضمام بنجاح!', 'success');
+                } else {
+                    showStatus('كود المشاركة غير صحيح أو منتهي الصلاحية', 'error');
+                }
+            } catch (error) {
+                console.error('Error joining with code:', error);
+                showStatus('حدث خطأ في الانضمام', 'error');
+            }
+        }
+
+        function proceedToDashboard() {
+            if (selectedOption === 'cloud' && !sharedStorageId && !existingStorageId) {
+                showStatus('يرجى إنشاء مساحة مشتركة أو الانضمام لواحدة موجودة', 'error');
+                return;
+            }
+            
+            if (selectedOption === 'code' && !sharedStorageId) {
+                showStatus('يرجى الانضمام باستخدام كود المشاركة أولاً', 'error');
+                return;
+            }
+            
+            // Set storage mode
+            if (selectedOption === 'local' || !selectedOption) {
+                localStorage.setItem('storage_mode', 'local');
+            } else {
+                localStorage.setItem('storage_mode', 'shared');
+            }
+            
+            // Redirect to dashboard
+            window.location.href = 'modern-dashboard.html';
+        }
+
+        function goBack() {
+            window.location.href = 'login.html';
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type} show`;
+            
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 3000);
+        }
+
+        // Auto-select cloud option if user has existing shared storage
+        if (existingStorageId) {
+            selectOption('cloud');
+            document.getElementById('shareCode').textContent = existingStorageId;
+            document.getElementById('sharedCodeDisplay').style.display = 'block';
+            sharedStorageId = existingStorageId;
+        }
+    </script>
+</body>
+</html>

@@ -16,6 +16,9 @@
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
+    <!-- Cloud Storage Script -->
+    <script src="cloud-storage.js"></script>
+    
     <style>
         :root {
             /* Light Theme */
@@ -274,6 +277,75 @@
             display: flex;
             align-items: center;
             gap: 16px;
+        }
+        
+        /* Storage Status Indicator */
+        .storage-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .storage-status.local {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+            color: white;
+        }
+        
+        .storage-status.shared {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            animation: pulse-glow 2s ease-in-out infinite alternate;
+        }
+        
+        .storage-status.syncing {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .storage-status.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+        
+        .storage-status:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.4); }
+        }
+        
+        #storageIcon {
+            animation: rotate 3s linear infinite;
+        }
+        
+        .storage-status.shared #storageIcon {
+            animation: none;
+        }
+        
+        .storage-status.syncing #storageIcon {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         .theme-toggle {
@@ -1168,6 +1240,12 @@
             </nav>
             
             <div class="user-section">
+                <!-- Storage Status Indicator -->
+                <div class="storage-status" id="storageStatus">
+                    <i class="fas fa-cloud" id="storageIcon"></i>
+                    <span id="storageText">محلي</span>
+                </div>
+                
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <i class="fas fa-moon" id="themeIcon"></i>
                 </button>
@@ -1503,6 +1581,12 @@
                 logout: 'تسجيل الخروج',
                 langName: 'عربي',
                 
+                // Storage status
+                localStorage: 'محلي',
+                sharedStorage: 'مشترك',
+                syncing: 'مزامنة',
+                error: 'خطأ',
+                
                 // Dashboard
                 dashboardTitle: 'لوحة التحكم الرئيسية',
                 dashboardSubtitle: 'نظرة شاملة على أداء النظام',
@@ -1624,6 +1708,12 @@
                 logout: 'Logout',
                 langName: 'English',
                 
+                // Storage status
+                localStorage: 'Local',
+                sharedStorage: 'Shared',
+                syncing: 'Syncing',
+                error: 'Error',
+                
                 // Dashboard
                 dashboardTitle: 'Main Dashboard',
                 dashboardSubtitle: 'Comprehensive view of system performance',
@@ -1744,6 +1834,12 @@
                 user: 'Utente',
                 logout: 'Disconnetti',
                 langName: 'Italiano',
+                
+                // Storage status
+                localStorage: 'Locale',
+                sharedStorage: 'Condiviso',
+                syncing: 'Sincronizzazione',
+                error: 'Errore',
                 
                 // Dashboard
                 dashboardTitle: 'Dashboard Principale',
@@ -2671,10 +2767,139 @@
             }
         }
         
+        // Storage Management Functions
+        function updateStorageStatus() {
+            const storageInfo = window.cloudStorage.getStorageInfo();
+            const statusElement = document.getElementById('storageStatus');
+            const iconElement = document.getElementById('storageIcon');
+            const textElement = document.getElementById('storageText');
+            const t = translations[currentLanguage];
+            
+            // Remove all status classes
+            statusElement.className = 'storage-status';
+            
+            if (storageInfo.mode === 'shared') {
+                statusElement.classList.add('shared');
+                iconElement.className = 'fas fa-cloud';
+                textElement.textContent = t.sharedStorage;
+                
+                // Show storage ID tooltip
+                statusElement.title = `Storage ID: ${storageInfo.storageId}`;
+            } else {
+                statusElement.classList.add('local');
+                iconElement.className = 'fas fa-desktop';
+                textElement.textContent = t.localStorage;
+                statusElement.title = 'البيانات محفوظة محلياً فقط';
+            }
+            
+            if (!storageInfo.isOnline && storageInfo.mode === 'shared') {
+                statusElement.classList.add('error');
+                iconElement.className = 'fas fa-exclamation-triangle';
+                textElement.textContent = t.error;
+                statusElement.title = 'غير متصل بالإنترنت';
+            }
+        }
+        
+        function showSyncStatus() {
+            const statusElement = document.getElementById('storageStatus');
+            const iconElement = document.getElementById('storageIcon');
+            const textElement = document.getElementById('storageText');
+            const t = translations[currentLanguage];
+            
+            statusElement.className = 'storage-status syncing';
+            iconElement.className = 'fas fa-sync';
+            textElement.textContent = t.syncing;
+            
+            // Reset after 2 seconds
+            setTimeout(() => {
+                updateStorageStatus();
+            }, 2000);
+        }
+        
+        // Override save functions to work with cloud storage
+        async function saveImports(imports) {
+            showSyncStatus();
+            const success = await window.cloudStorage.saveData('imports', imports);
+            if (success) {
+                await loadDashboardData();
+            }
+            return success;
+        }
+        
+        async function saveExports(exports) {
+            showSyncStatus();
+            const success = await window.cloudStorage.saveData('exports', exports);
+            if (success) {
+                await loadDashboardData();
+            }
+            return success;
+        }
+        
+        async function saveNotes(notes) {
+            showSyncStatus();
+            const success = await window.cloudStorage.saveData('notes', notes);
+            if (success) {
+                await loadDashboardData();
+            }
+            return success;
+        }
+        
+        async function saveEmployees(employees) {
+            showSyncStatus();
+            const success = await window.cloudStorage.saveData('employees', employees);
+            if (success) {
+                await loadDashboardData();
+            }
+            return success;
+        }
+        
+        // Load data from cloud storage
+        async function loadDashboardData() {
+            try {
+                const imports = await window.cloudStorage.loadData('imports');
+                const exports = await window.cloudStorage.loadData('exports');
+                const notes = await window.cloudStorage.loadData('notes');
+                const employees = await window.cloudStorage.loadData('employees');
+                
+                // Update dashboard stats
+                document.getElementById('importsCount').textContent = imports.length;
+                document.getElementById('exportsCount').textContent = exports.length;
+                document.getElementById('notesCount').textContent = notes.length;
+                document.getElementById('employeesCount').textContent = employees.length;
+                
+                // Update tables
+                updateImportsTable(imports);
+                updateExportsTable(exports);
+                updateNotesTable(notes);
+                updateEmployeesTable(employees);
+                
+                updateStorageStatus();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+        
+        // Listen for data changes from other users/tabs
+        window.addEventListener('dataChanged', (event) => {
+            console.log('Data changed:', event.detail);
+            loadDashboardData();
+        });
+        
+        window.addEventListener('syncComplete', (event) => {
+            console.log('Sync complete:', event.detail);
+            loadDashboardData();
+        });
+        
+        window.addEventListener('externalDataChange', (event) => {
+            console.log('External data change:', event.detail);
+            loadDashboardData();
+        });
+        
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             initTheme();
             initLanguage();
+            updateStorageStatus(); // Add storage status update
             if (checkAuth()) {
                 loadDashboardData();
                 const t = translations[currentLanguage];
