@@ -16,8 +16,8 @@
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
-    <!-- Cloud Storage Script -->
-    <script src="cloud-storage.js"></script>
+    <!-- Firebase Real-time Storage Script -->
+    <script src="firebase-storage.js"></script>
     
     <style>
         :root {
@@ -2793,7 +2793,7 @@
         
         // Storage Management Functions
         function updateStorageStatus() {
-            const storageInfo = window.cloudStorage.getStorageInfo();
+            const storageInfo = window.cloudStorage?.getStorageInfo() || { mode: 'local', isOnline: navigator.onLine };
             const statusElement = document.getElementById('storageStatus');
             const iconElement = document.getElementById('storageIcon');
             const textElement = document.getElementById('storageText');
@@ -2802,7 +2802,12 @@
             // Remove all status classes
             statusElement.className = 'storage-status';
             
-            if (storageInfo.mode === 'shared') {
+            if (storageInfo.mode === 'firebase') {
+                statusElement.classList.add('shared');
+                iconElement.className = 'fas fa-cloud';
+                textElement.textContent = t.sharedStorage;
+                statusElement.title = 'بيانات مشتركة عبر Firebase';
+            } else if (storageInfo.mode === 'shared') {
                 statusElement.classList.add('shared');
                 iconElement.className = 'fas fa-cloud';
                 textElement.textContent = t.sharedStorage;
@@ -2816,7 +2821,7 @@
                 statusElement.title = 'البيانات محفوظة محلياً فقط';
             }
             
-            if (!storageInfo.isOnline && storageInfo.mode === 'shared') {
+            if (!storageInfo.isOnline) {
                 statusElement.classList.add('error');
                 iconElement.className = 'fas fa-exclamation-triangle';
                 textElement.textContent = t.error;
@@ -2920,12 +2925,17 @@
         });
         
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             initTheme();
             initLanguage();
             updateStorageStatus(); // Add storage status update
             if (checkAuth()) {
-                loadDashboardData(); // This is now the async version
+                // Initialize Firebase default data
+                await window.cloudStorage.initializeDefaultData();
+                
+                // Load dashboard data
+                await loadDashboardData();
+                
                 const t = translations[currentLanguage];
                 const translatedUserName = getTranslatedUserName(currentUser);
                 showNotification(`${t.welcome} ${translatedUserName}! ${t.loginSuccess}`, 'success');
