@@ -6,9 +6,13 @@
     <title>Sistema di Gestione Mani Verdi - Accesso</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -144,6 +148,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         .login-btn:hover {
@@ -153,6 +161,11 @@
 
         .login-btn:active {
             transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
         .message {
@@ -193,18 +206,11 @@
             border-top: 2px solid transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-left: 10px;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        .login-btn.loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .login-btn.loading .loading {
@@ -217,54 +223,6 @@
                 margin: 20px;
                 padding: 30px 25px;
             }
-        }
-    </style>
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-            direction: ltr;
-            text-align: left;
-        }
-        input[type="text"]:focus, input[type="password"]:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        .error {
-            color: #e74c3c;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-        .success {
-            color: #27ae60;
-            margin-top: 10px;
-            font-size: 14px;
         }
     </style>
 </head>
@@ -318,7 +276,10 @@
                 welcomeMessage: 'مرحباً {name}! جاري التوجيه...',
                 errorMessage: 'اسم المستخدم أو كلمة المرور غير صحيحة',
                 alreadyLoggedIn: 'تم تسجيل الدخول مسبقاً. جاري التوجيه...',
-                pageTitle: 'نظام إدارة مناي ڤيردي - تسجيل الدخول'
+                pageTitle: 'نظام إدارة مناي ڤيردي - تسجيل الدخول',
+                // User names in Arabic
+                superuserName: 'المدير العام',
+                userName: 'مناي'
             },
             en: {
                 title: 'Login',
@@ -329,7 +290,10 @@
                 welcomeMessage: 'Welcome {name}! Redirecting...',
                 errorMessage: 'Invalid username or password',
                 alreadyLoggedIn: 'Already logged in. Redirecting...',
-                pageTitle: 'Mani Verdi Management System - Login'
+                pageTitle: 'Mani Verdi Management System - Login',
+                // User names in English
+                superuserName: 'General Manager',
+                userName: 'Mani'
             },
             it: {
                 title: 'Accesso',
@@ -340,15 +304,21 @@
                 welcomeMessage: 'Benvenuto {name}! Reindirizzamento...',
                 errorMessage: 'Nome utente o password non validi',
                 alreadyLoggedIn: 'Già effettuato l\'accesso. Reindirizzamento...',
-                pageTitle: 'Sistema di Gestione Mani Verdi - Accesso'
+                pageTitle: 'Sistema di Gestione Mani Verdi - Accesso',
+                // User names in Italian
+                superuserName: 'Direttore Generale',
+                userName: 'Mani'
             }
         };
 
-        // Mock user data
-        const users = [
-            { username: 'iraq', password: 'iraq', role: 'superuser', name: 'المدير العام' },
-            { username: 'mani', password: 'mani', role: 'user', name: 'مناي' }
-        ];
+        // Mock user data with dynamic names
+        function getUsers() {
+            const t = translations[currentLanguage];
+            return [
+                { username: 'iraq', password: 'iraq', role: 'superuser', name: t.superuserName },
+                { username: 'mani', password: 'mani', role: 'user', name: t.userName }
+            ];
+        }
 
         function changeLanguage(lang) {
             currentLanguage = lang;
@@ -389,7 +359,7 @@
             
             // Clear any existing messages
             const messageDiv = document.getElementById('message');
-            if (messageDiv.textContent) {
+            if (messageDiv.innerHTML) {
                 messageDiv.innerHTML = '';
             }
         }
@@ -416,17 +386,18 @@
             
             // Simulate loading delay
             setTimeout(() => {
+                const users = getUsers(); // Get users with current language names
                 const user = users.find(u => u.username === username && u.password === password);
                 
                 if (user) {
                     const welcomeMessage = t.welcomeMessage.replace('{name}', user.name);
                     messageDiv.innerHTML = `<div class="message success">${welcomeMessage}</div>`;
                     
-                    // Save user data and language preference
+                    // Save user data with current language name
                     localStorage.setItem('currentUser', JSON.stringify({
                         username: user.username,
                         role: user.role,
-                        name: user.name
+                        name: user.name // This will be in the current language
                     }));
                     
                     // Save current language to carry over to dashboard
@@ -444,7 +415,7 @@
                     loginBtn.classList.remove('loading');
                     loginBtn.disabled = false;
                     
-                    // Clear form
+                    // Clear password field
                     document.getElementById('password').value = '';
                 }
             }, 1000);

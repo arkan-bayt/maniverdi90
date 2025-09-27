@@ -1880,6 +1880,36 @@
             showNotification(`${translations[currentLanguage].langName} ${translations[currentLanguage].loginSuccess}`, 'success');
         }
         
+        // Get translated user name based on current language
+        function getTranslatedUserName(user) {
+            if (!user) return '';
+            
+            const userNameTranslations = {
+                ar: {
+                    superuser: 'المدير العام',
+                    user: 'مناي'
+                },
+                en: {
+                    superuser: 'General Manager', 
+                    user: 'Mani'
+                },
+                it: {
+                    superuser: 'Direttore Generale',
+                    user: 'Mani'
+                }
+            };
+            
+            // Get role-based translation
+            if (user.username === 'iraq') {
+                return userNameTranslations[currentLanguage].superuser;
+            } else if (user.username === 'mani') {
+                return userNameTranslations[currentLanguage].user;
+            }
+            
+            // Fallback to stored name or username
+            return user.name || user.username;
+        }
+        
         function updateLanguageUI() {
             const langNames = { ar: 'عربي', en: 'English', it: 'Italiano' };
             document.getElementById('currentLang').textContent = langNames[currentLanguage];
@@ -1930,6 +1960,13 @@
             
             // Update stat labels and descriptions
             updateStatLabelsAndDescriptions();
+            
+            // Update user name with current language
+            if (currentUser) {
+                const translatedUserName = getTranslatedUserName(currentUser);
+                document.getElementById('userName').textContent = translatedUserName;
+                document.getElementById('userAvatar').textContent = translatedUserName.charAt(0).toUpperCase();
+            }
             
             // Update modal language if it exists
             if (document.getElementById('addItemModal')) {
@@ -2028,8 +2065,11 @@
             }
             
             currentUser = JSON.parse(userData);
-            document.getElementById('userName').textContent = currentUser.name || currentUser.username;
-            document.getElementById('userAvatar').textContent = (currentUser.name || currentUser.username).charAt(0).toUpperCase();
+            
+            // Get translated user name
+            const translatedUserName = getTranslatedUserName(currentUser);
+            document.getElementById('userName').textContent = translatedUserName;
+            document.getElementById('userAvatar').textContent = translatedUserName.charAt(0).toUpperCase();
             
             // Show users section for superuser only
             if (currentUser.role === 'superuser') {
@@ -2638,7 +2678,8 @@
             if (checkAuth()) {
                 loadDashboardData();
                 const t = translations[currentLanguage];
-                showNotification(`${t.welcome} ${currentUser.name || currentUser.username}! ${t.loginSuccess}`, 'success');
+                const translatedUserName = getTranslatedUserName(currentUser);
+                showNotification(`${t.welcome} ${translatedUserName}! ${t.loginSuccess}`, 'success');
             }
         });
     </script>
