@@ -2255,10 +2255,10 @@
         }
         
         async function loadDashboardData() {
-            const imports = await window.cloudStorage.loadData('imports');
-            const exports = await window.cloudStorage.loadData('exports');
-            const notes = await window.cloudStorage.loadData('notes');
-            const employees = await window.cloudStorage.loadData('employees');
+            const imports = await window.dataManager.loadData('imports');
+            const exports = await window.dataManager.loadData('exports');
+            const notes = await window.dataManager.loadData('notes');
+            const employees = await window.dataManager.loadData('employees');
             
             // Animate counters
             animateCounter('importsCount', imports.length);
@@ -2285,7 +2285,7 @@
         }
         
         async function loadImports() {
-            const imports = await window.cloudStorage.loadData('imports');
+            const imports = await window.dataManager.loadData('imports');
             const tableBody = document.getElementById('importsTable');
             const t = translations[currentLanguage];
             
@@ -2342,7 +2342,7 @@
         }
         
         async function loadExports() {
-            const exports = await window.cloudStorage.loadData('exports');
+            const exports = await window.dataManager.loadData('exports');
             const tableBody = document.getElementById('exportsTable');
             const t = translations[currentLanguage];
             
@@ -2399,7 +2399,7 @@
         }
         
         async function loadNotes() {
-            const notes = await window.cloudStorage.loadData('notes');
+            const notes = await window.dataManager.loadData('notes');
             const tableBody = document.getElementById('notesTable');
             const t = translations[currentLanguage];
             
@@ -2447,7 +2447,7 @@
         }
         
         async function loadEmployees() {
-            const employees = await window.cloudStorage.loadData('employees');
+            const employees = await window.dataManager.loadData('employees');
             const tableBody = document.getElementById('employeesTable');
             const t = translations[currentLanguage];
             
@@ -2615,9 +2615,9 @@
             
             // Save using cloud storage
             const key = currentFormType + 's';
-            const items = await window.cloudStorage.loadData(key);
+            const items = await window.dataManager.loadData(key);
             items.push(data);
-            await window.cloudStorage.saveData(key, items);
+            await window.dataManager.saveData(key, items);
             
             // Close modal
             closeAddModal();
@@ -2669,9 +2669,9 @@
             
             // Save using cloud storage
             const key = type + 's';
-            const items = await window.cloudStorage.loadData(key);
+            const items = await window.dataManager.loadData(key);
             items.push(data);
-            await window.cloudStorage.saveData(key, items);
+            await window.dataManager.saveData(key, items);
             
             // Reload data
             loadSectionData(type + 's');
@@ -2707,9 +2707,9 @@
             if (!confirm(t.confirmDelete)) return;
             
             const key = type + 's';
-            const items = await window.cloudStorage.loadData(key);
+            const items = await window.dataManager.loadData(key);
             const filtered = items.filter(item => (item._id || item.id) != id);
-            await window.cloudStorage.saveData(key, filtered);
+            await window.dataManager.saveData(key, filtered);
             
             // Reload data
             loadSectionData(type + 's');
@@ -2793,7 +2793,6 @@
         
         // Storage Management Functions
         function updateStorageStatus() {
-            const storageInfo = window.cloudStorage?.getStorageInfo() || { mode: 'local', isOnline: navigator.onLine };
             const statusElement = document.getElementById('storageStatus');
             const iconElement = document.getElementById('storageIcon');
             const textElement = document.getElementById('storageText');
@@ -2802,30 +2801,17 @@
             // Remove all status classes
             statusElement.className = 'storage-status';
             
-            if (storageInfo.mode === 'firebase') {
-                statusElement.classList.add('shared');
-                iconElement.className = 'fas fa-cloud';
-                textElement.textContent = t.sharedStorage;
-                statusElement.title = 'بيانات مشتركة عبر Firebase';
-            } else if (storageInfo.mode === 'shared') {
-                statusElement.classList.add('shared');
-                iconElement.className = 'fas fa-cloud';
-                textElement.textContent = t.sharedStorage;
-                
-                // Show storage ID tooltip
-                statusElement.title = `Storage ID: ${storageInfo.storageId}`;
-            } else {
-                statusElement.classList.add('local');
-                iconElement.className = 'fas fa-desktop';
-                textElement.textContent = t.localStorage;
-                statusElement.title = 'البيانات محفوظة محلياً فقط';
-            }
+            // Always show Firebase shared mode
+            statusElement.classList.add('shared');
+            iconElement.className = 'fas fa-cloud';
+            textElement.textContent = t.sharedStorage;
+            statusElement.title = 'بيانات مشتركة عبر Firebase';
             
-            if (!storageInfo.isOnline) {
+            if (!navigator.onLine) {
                 statusElement.classList.add('error');
                 iconElement.className = 'fas fa-exclamation-triangle';
                 textElement.textContent = t.error;
-                statusElement.title = 'غير متصل بالإنترنت';
+                statusElement.title = 'غير متصل بالإنترنت - يعمل محلياً';
             }
         }
         
@@ -2845,10 +2831,10 @@
             }, 2000);
         }
         
-        // Override save functions to work with cloud storage
+        // Override save functions to work with Firebase storage
         async function saveImports(imports) {
             showSyncStatus();
-            const success = await window.cloudStorage.saveData('imports', imports);
+            const success = await window.dataManager.saveData('imports', imports);
             if (success) {
                 await loadDashboardData();
             }
@@ -2857,7 +2843,7 @@
         
         async function saveExports(exports) {
             showSyncStatus();
-            const success = await window.cloudStorage.saveData('exports', exports);
+            const success = await window.dataManager.saveData('exports', exports);
             if (success) {
                 await loadDashboardData();
             }
@@ -2866,7 +2852,7 @@
         
         async function saveNotes(notes) {
             showSyncStatus();
-            const success = await window.cloudStorage.saveData('notes', notes);
+            const success = await window.dataManager.saveData('notes', notes);
             if (success) {
                 await loadDashboardData();
             }
@@ -2875,20 +2861,20 @@
         
         async function saveEmployees(employees) {
             showSyncStatus();
-            const success = await window.cloudStorage.saveData('employees', employees);
+            const success = await window.dataManager.saveData('employees', employees);
             if (success) {
                 await loadDashboardData();
             }
             return success;
         }
         
-        // Load data from cloud storage
+        // Load data from Firebase storage
         async function loadDashboardData() {
             try {
-                const imports = await window.cloudStorage.loadData('imports');
-                const exports = await window.cloudStorage.loadData('exports');
-                const notes = await window.cloudStorage.loadData('notes');
-                const employees = await window.cloudStorage.loadData('employees');
+                const imports = await window.dataManager.loadData('imports');
+                const exports = await window.dataManager.loadData('exports');
+                const notes = await window.dataManager.loadData('notes');
+                const employees = await window.dataManager.loadData('employees');
                 
                 // Update dashboard stats
                 document.getElementById('importsCount').textContent = imports.length;
@@ -2924,6 +2910,9 @@
             loadDashboardData();
         });
         
+        // Initialize Firebase Data Manager
+        window.dataManager = new RealTimeDataManager();
+        
         // Initialize
         document.addEventListener('DOMContentLoaded', async function() {
             initTheme();
@@ -2931,7 +2920,7 @@
             updateStorageStatus(); // Add storage status update
             if (checkAuth()) {
                 // Initialize Firebase default data
-                await window.cloudStorage.initializeDefaultData();
+                await window.dataManager.initializeDefaultData();
                 
                 // Load dashboard data
                 await loadDashboardData();
