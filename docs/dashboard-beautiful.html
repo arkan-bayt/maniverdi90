@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>نظام إدارة مناي ڤيردي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="./static/css/main.d7803118.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: Cairo, Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .app-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #4a5568;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: 2px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .dashboard-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-description {
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .add-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .data-table th {
+            background: #f7fafc;
+            padding: 16px;
+            text-align: right;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .data-table tr:hover {
+            background: #f7fafc;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-btn {
+            background: #4299e1;
+            color: white;
+        }
+        
+        .edit-btn:hover {
+            background: #3182ce;
+        }
+        
+        .delete-btn {
+            background: #f56565;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #e53e3e;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">MV</div>
+                <div class="logo-text">نظام إدارة مناي ڤيردي</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="showSection('dashboard', this)">📊 لوحة التحكم</div>
+                <div class="nav-item" onclick="showSection('imports', this)">📥 المستوردات</div>
+                <div class="nav-item" onclick="showSection('exports', this)">📤 المصدرات</div>
+                <div class="nav-item" onclick="showSection('notes', this)">📝 الملاحظات</div>
+                <div class="nav-item" onclick="showSection('employees', this)">👥 الموظفين</div>
+                <div class="nav-item hidden" id="usersNav" onclick="showSection('users', this)">⚙️ المستخدمين</div>
+            </nav>
+            
+            <div class="user-section">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">M</div>
+                    <span id="userName">المستخدم</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="dashboard-section">
+            <h1 class="section-title">
+                <div class="section-icon">📊</div>
+                لوحة التحكم الرئيسية
+            </h1>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="importsCount">0</div>
+                    <div class="stat-label">المستوردات</div>
+                    <div class="stat-description">إجمالي العناصر المستوردة</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number" id="exportsCount">0</div>
+                    <div class="stat-label">المصدرات</div>
+                    <div class="stat-description">إجمالي العناصر المصدرة</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number" id="notesCount">0</div>
+                    <div class="stat-label">الملاحظات</div>
+                    <div class="stat-description">إجمالي الملاحظات المحفوظة</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-number" id="employeesCount">0</div>
+                    <div class="stat-label">الموظفين</div>
+                    <div class="stat-description">إجمالي الموظفين المسجلين</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Imports Section -->
+        <section id="imports" class="content-section">
+            <h1 class="section-title">
+                <div class="section-icon">📥</div>
+                إدارة المستوردات
+            </h1>
+            
+            <button class="add-btn" onclick="showAddForm('import')">
+                ➕ إضافة مستورد جديد
+            </button>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>اسم المنتج</th>
+                        <th>السعر</th>
+                        <th>الملاحظات</th>
+                        <th>التاريخ</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="importsTable"></tbody>
+            </table>
+        </section>
+
+        <!-- Exports Section -->
+        <section id="exports" class="content-section">
+            <h1 class="section-title">
+                <div class="section-icon">📤</div>
+                إدارة المصدرات
+            </h1>
+            
+            <button class="add-btn" onclick="showAddForm('export')">
+                ➕ إضافة مصدر جديد
+            </button>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>اسم المنتج</th>
+                        <th>السعر</th>
+                        <th>الملاحظات</th>
+                        <th>التاريخ</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="exportsTable"></tbody>
+            </table>
+        </section>
+
+        <!-- Notes Section -->
+        <section id="notes" class="content-section">
+            <h1 class="section-title">
+                <div class="section-icon">📝</div>
+                إدارة الملاحظات
+            </h1>
+            
+            <button class="add-btn" onclick="showAddForm('note')">
+                ➕ إضافة ملاحظة جديدة
+            </button>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>العنوان</th>
+                        <th>المحتوى</th>
+                        <th>الفئة</th>
+                        <th>الأولوية</th>
+                        <th>التاريخ</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="notesTable"></tbody>
+            </table>
+        </section>
+
+        <!-- Employees Section -->
+        <section id="employees" class="content-section">
+            <h1 class="section-title">
+                <div class="section-icon">👥</div>
+                إدارة الموظفين
+            </h1>
+            
+            <button class="add-btn" onclick="showAddForm('employee')">
+                ➕ إضافة موظف جديد
+            </button>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>المسمى الوظيفي</th>
+                        <th>الراتب الشهري</th>
+                        <th>تاريخ البدء</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="employeesTable"></tbody>
+            </table>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users" class="content-section">
+            <h1 class="section-title">
+                <div class="section-icon">⚙️</div>
+                إدارة المستخدمين
+            </h1>
+            
+            <button class="add-btn" onclick="showAddForm('user')">
+                ➕ إضافة مستخدم جديد
+            </button>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>اسم المستخدم</th>
+                        <th>الدور</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="./init-data.js"></script>
+    <script>
+        let currentUser = null;
+        
+        // Check authentication
+        function checkAuth() {
+            const userData = localStorage.getItem('currentUser');
+            if (!userData) {
+                window.location.href = './login.html';
+                return false;
+            }
+            
+            currentUser = JSON.parse(userData);
+            document.getElementById('userName').textContent = currentUser.name || currentUser.username;
+            document.getElementById('userAvatar').textContent = (currentUser.name || currentUser.username).charAt(0).toUpperCase();
+            
+            // Show users section for superuser only
+            if (currentUser.role === 'superuser') {
+                document.getElementById('usersNav').classList.remove('hidden');
+            }
+            
+            return true;
+        }
+        
+        // Show section
+        function showSection(sectionName, element) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section, .content-section').forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            const section = document.getElementById(sectionName);
+            if (sectionName === 'dashboard') {
+                section.style.display = 'block';
+            } else {
+                section.classList.add('active');
+                section.style.display = 'block';
+            }
+            
+            // Add active class to clicked nav item
+            element.classList.add('active');
+            
+            // Load section data
+            loadSectionData(sectionName);
+        }
+        
+        // Load section data
+        function loadSectionData(sectionName) {
+            switch(sectionName) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'imports':
+                    loadImports();
+                    break;
+                case 'exports':
+                    loadExports();
+                    break;
+                case 'notes':
+                    loadNotes();
+                    break;
+                case 'employees':
+                    loadEmployees();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+            }
+        }
+        
+        // Load dashboard statistics
+        function loadDashboardData() {
+            const imports = JSON.parse(localStorage.getItem('maniverdi_imports') || '[]');
+            const exports = JSON.parse(localStorage.getItem('maniverdi_exports') || '[]');
+            const notes = JSON.parse(localStorage.getItem('maniverdi_notes') || '[]');
+            const employees = JSON.parse(localStorage.getItem('maniverdi_employees') || '[]');
+            
+            // Animate numbers
+            animateCounter('importsCount', imports.length);
+            animateCounter('exportsCount', exports.length);
+            animateCounter('notesCount', notes.length);
+            animateCounter('employeesCount', employees.length);
+        }
+        
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            let currentValue = 0;
+            const increment = Math.ceil(targetValue / 20);
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= targetValue) {
+                    currentValue = targetValue;
+                    clearInterval(timer);
+                }
+                element.textContent = currentValue;
+            }, 50);
+        }
+        
+        // Load table data functions
+        function loadImports() {
+            const imports = JSON.parse(localStorage.getItem('maniverdi_imports') || '[]');
+            const tableBody = document.getElementById('importsTable');
+            tableBody.innerHTML = '';
+            
+            imports.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.productName}</td>
+                    <td>${item.price.toLocaleString()} د.ع</td>
+                    <td>${item.notes}</td>
+                    <td>${item.createdAt}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('import', '${item._id}')">تعديل</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('import', '${item._id}')">حذف</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function loadExports() {
+            const exports = JSON.parse(localStorage.getItem('maniverdi_exports') || '[]');
+            const tableBody = document.getElementById('exportsTable');
+            tableBody.innerHTML = '';
+            
+            exports.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.productName}</td>
+                    <td>${item.price.toLocaleString()} د.ع</td>
+                    <td>${item.notes}</td>
+                    <td>${item.createdAt}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('export', '${item._id}')">تعديل</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('export', '${item._id}')">حذف</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function loadNotes() {
+            const notes = JSON.parse(localStorage.getItem('maniverdi_notes') || '[]');
+            const tableBody = document.getElementById('notesTable');
+            tableBody.innerHTML = '';
+            
+            notes.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.title}</td>
+                    <td>${item.content.substring(0, 50)}${item.content.length > 50 ? '...' : ''}</td>
+                    <td><span style="background: #e6fffa; color: #38b2ac; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${item.category}</span></td>
+                    <td><span style="background: ${getPriorityColor(item.priority)}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${item.priority}</span></td>
+                    <td>${item.createdDate}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('note', '${item._id}')">تعديل</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('note', '${item._id}')">حذف</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function loadEmployees() {
+            const employees = JSON.parse(localStorage.getItem('maniverdi_employees') || '[]');
+            const tableBody = document.getElementById('employeesTable');
+            tableBody.innerHTML = '';
+            
+            employees.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.jobTitle}</td>
+                    <td>${item.monthlySalary.toLocaleString()} د.ع</td>
+                    <td>${item.startDate}</td>
+                    <td><span style="background: ${item.active ? '#c6f6d5' : '#fed7d7'}; color: ${item.active ? '#22543d' : '#742a2a'}; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${item.active ? 'نشط' : 'غير نشط'}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('employee', '${item._id}')">تعديل</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('employee', '${item._id}')">حذف</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function loadUsers() {
+            if (currentUser.role !== 'superuser') return;
+            
+            const users = JSON.parse(localStorage.getItem('maniverdi_users') || '[]');
+            const tableBody = document.getElementById('usersTable');
+            tableBody.innerHTML = '';
+            
+            users.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.username}</td>
+                    <td><span style="background: ${getRoleColor(item.role)}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${getRoleText(item.role)}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('user', '${item.id}')">تعديل</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('user', '${item.id}')">حذف</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Helper functions
+        function getPriorityColor(priority) {
+            switch(priority) {
+                case 'عالي': return '#f56565';
+                case 'متوسط': return '#ed8936';
+                case 'منخفض': return '#68d391';
+                default: return '#4299e1';
+            }
+        }
+        
+        function getRoleColor(role) {
+            switch(role) {
+                case 'admin': return '#9f7aea';
+                case 'superuser': return '#4299e1';
+                case 'user': return '#68d391';
+                default: return '#4299e1';
+            }
+        }
+        
+        function getRoleText(role) {
+            switch(role) {
+                case 'admin': return 'مدير';
+                case 'superuser': return 'مدير عام';
+                case 'user': return 'مستخدم';
+                default: return 'مستخدم';
+            }
+        }
+        
+        // Add/Edit/Delete functions
+        function showAddForm(type) {
+            const name = prompt(`أدخل ${getFieldLabel(type, 'name')}:`);
+            if (!name) return;
+            
+            const data = { 
+                _id: Date.now().toString(), 
+                createdAt: new Date().toISOString().split('T')[0] 
+            };
+            
+            if (type === 'import' || type === 'export') {
+                data.productName = name;
+                data.price = parseFloat(prompt('أدخل السعر:') || 0);
+                data.notes = prompt('أدخل الملاحظات:') || '';
+            } else if (type === 'note') {
+                data.title = name;
+                data.content = prompt('أدخل المحتوى:') || '';
+                data.category = prompt('أدخل الفئة:') || 'عام';
+                data.priority = prompt('أدخل الأولوية (عالي/متوسط/منخفض):') || 'متوسط';
+                data.createdDate = data.createdAt;
+            } else if (type === 'employee') {
+                data.name = name;
+                data.jobTitle = prompt('أدخل المسمى الوظيفي:') || '';
+                data.monthlySalary = parseFloat(prompt('أدخل الراتب الشهري:') || 0);
+                data.startDate = data.createdAt;
+                data.active = confirm('هل الموظف نشط؟');
+            } else if (type === 'user') {
+                data.id = Date.now();
+                data.username = name;
+                data.password = prompt('أدخل كلمة المرور:') || '';
+                data.role = prompt('أدخل الدور (admin/superuser/user):') || 'user';
+            }
+            
+            // Save to localStorage
+            const key = `maniverdi_${type}s`;
+            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            items.push(data);
+            localStorage.setItem(key, JSON.stringify(items));
+            
+            // Reload data
+            loadSectionData(type + 's');
+            if (type !== 'user') loadDashboardData();
+        }
+        
+        function editItem(type, id) {
+            alert('ميزة التعديل ستكون متاحة قريباً في التحديث القادم');
+        }
+        
+        function deleteItem(type, id) {
+            if (!confirm('هل أنت متأكد من الحذف؟')) return;
+            
+            const key = `maniverdi_${type}s`;
+            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            const filtered = items.filter(item => (item._id || item.id) != id);
+            localStorage.setItem(key, JSON.stringify(filtered));
+            
+            // Reload data
+            loadSectionData(type + 's');
+            if (type !== 'user') loadDashboardData();
+        }
+        
+        function getFieldLabel(type, field) {
+            const labels = {
+                import: { name: 'اسم المنتج' },
+                export: { name: 'اسم المنتج' },
+                note: { name: 'عنوان الملاحظة' },
+                employee: { name: 'اسم الموظف' },
+                user: { name: 'اسم المستخدم' }
+            };
+            return labels[type]?.[field] || 'الاسم';
+        }
+        
+        function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = './login.html';
+            }
+        }
+        
+        // Initialize
+        if (checkAuth()) {
+            loadDashboardData();
+        }
+    </script>
+</body>
+</html>
