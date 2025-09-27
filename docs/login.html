@@ -692,8 +692,11 @@
                     
                     localStorage.setItem('language', currentLanguage);
                     
-                    // Redirect after animation
+                    // Redirect after animation - Always use sharing
                     setTimeout(() => {
+                        // Set shared mode by default
+                        localStorage.setItem('storage_mode', 'shared');
+                        localStorage.setItem('shared_storage_id', 'maniverdi_global');
                         window.location.href = './modern-dashboard.html';
                     }, 2500);
                     
@@ -718,6 +721,9 @@
                 const t = translations[currentLanguage];
                 showMessage(t.alreadyLoggedIn, 'success');
                 setTimeout(() => {
+                    // Set shared mode by default  
+                    localStorage.setItem('storage_mode', 'shared');
+                    localStorage.setItem('shared_storage_id', 'maniverdi_global');
                     window.location.href = './modern-dashboard.html';
                 }, 2000);
             }

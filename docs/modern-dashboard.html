@@ -422,8 +422,8 @@
         }
         
         .user-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: var(--gradient-accent);
             display: flex;
@@ -431,7 +431,13 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 16px;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
         
         .user-name {
@@ -441,24 +447,28 @@
         }
         
         .logout-btn {
-            padding: 10px 16px;
+            padding: 6px 12px;
             background: var(--danger-color);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
+            font-weight: 500;
+            font-size: 12px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         .logout-btn:hover {
             background: #dc2626;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+        
+        .logout-btn i {
+            font-size: 12px;
         }
         
         /* Main Content */
@@ -1262,13 +1272,14 @@
                 
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">M</div>
-                    <div class="user-name" id="userName">المستخدم</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">المستخدم</div>
+                        <button class="logout-btn" onclick="logout()" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span id="logoutText">تسجيل الخروج</span>
+                        </button>
+                    </div>
                 </div>
-                
-                <button class="logout-btn" onclick="logout()" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span id="logoutText">تسجيل الخروج</span>
-                </button>
             </div>
         </div>
     </header>

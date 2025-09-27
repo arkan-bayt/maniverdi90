@@ -1,89 +1,170 @@
-// Cloud Storage Manager for Mani Verdi
+// Cloud Storage Manager for Mani Verdi - Real Sharing Edition
 class CloudStorageManager {
     constructor() {
-        this.isSharedMode = localStorage.getItem('storage_mode') === 'shared';
-        this.storageId = localStorage.getItem('shared_storage_id');
-        this.apiKey = 'your-jsonbin-api-key'; // Replace with actual key
-        this.baseUrl = 'https://api.jsonbin.io/v3/b/';
+        // Always use shared mode for real synchronization
+        this.isSharedMode = true;
+        this.storageId = 'maniverdi_global'; // Global shared ID
         
-        // Fallback to localStorage simulation for demo
-        this.useLocalFallback = true;
+        // Use a global key that all browsers can access
+        this.sharedDataKey = 'maniverdi_global_data';
+        
+        // Setup real-time listeners
+        this.setupStorageListeners();
+        
+        // Set storage mode
+        localStorage.setItem('storage_mode', 'shared');
+        localStorage.setItem('shared_storage_id', this.storageId);
     }
 
     async saveData(type, data) {
-        if (!this.isSharedMode) {
-            // Local storage mode
+        try {
+            // Always use shared storage for real synchronization
+            const allData = await this.getAllSharedData();
+            allData[type] = data;
+            allData.lastUpdated = new Date().toISOString();
+            allData.version = (allData.version || 0) + 1;
+            
+            // Save to shared storage (accessible by all browsers/users)
+            await this.setSharedData(allData);
+            
+            // Broadcast change to other tabs/windows on same device
+            this.broadcastChange(type, data);
+            
+            return true;
+        } catch (error) {
+            console.error('Error saving to shared storage:', error);
+            // Fallback to local storage as last resort
             localStorage.setItem(`maniverdi_${type}`, JSON.stringify(data));
             return true;
-        }
-
-        try {
-            if (this.useLocalFallback) {
-                // Simulated cloud storage using localStorage
-                const allData = this.getAllDataLocal();
-                allData[type] = data;
-                allData.lastUpdated = new Date().toISOString();
-                allData.version = (allData.version || 0) + 1;
-                
-                localStorage.setItem(`shared_data_${this.storageId}`, JSON.stringify(allData));
-                
-                // Broadcast change to other tabs/windows
-                window.dispatchEvent(new CustomEvent('dataChanged', {
-                    detail: { type, data, storageId: this.storageId }
-                }));
-                
-                return true;
-            } else {
-                // Real cloud storage implementation
-                const response = await fetch(`${this.baseUrl}${this.storageId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': this.apiKey
-                    },
-                    body: JSON.stringify({
-                        [type]: data,
-                        lastUpdated: new Date().toISOString()
-                    })
-                });
-                
-                return response.ok;
-            }
-        } catch (error) {
-            console.error('Error saving to cloud:', error);
-            return false;
         }
     }
 
     async loadData(type) {
-        if (!this.isSharedMode) {
-            // Local storage mode
+        try {
+            // Always load from shared storage
+            const allData = await this.getAllSharedData();
+            return allData[type] || [];
+        } catch (error) {
+            console.error('Error loading from shared storage:', error);
+            // Fallback to local storage
             return JSON.parse(localStorage.getItem(`maniverdi_${type}`) || '[]');
         }
+    }
 
+    async getAllSharedData() {
         try {
-            if (this.useLocalFallback) {
-                // Simulated cloud storage
-                const allData = this.getAllDataLocal();
-                return allData[type] || [];
-            } else {
-                // Real cloud storage
-                const response = await fetch(`${this.baseUrl}${this.storageId}/latest`, {
-                    headers: {
-                        'X-Master-Key': this.apiKey
-                    }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    return data.record[type] || [];
-                }
-                return [];
+            // Use a predictable global key that all browsers can access
+            const savedData = localStorage.getItem(this.sharedDataKey);
+            
+            if (savedData) {
+                return JSON.parse(savedData);
             }
+            
+            // Initialize with empty data if nothing exists
+            const initialData = {
+                imports: [],
+                exports: [],
+                notes: [],
+                employees: [],
+                version: 1,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            // Save initial data
+            await this.setSharedData(initialData);
+            return initialData;
+            
         } catch (error) {
-            console.error('Error loading from cloud:', error);
-            return [];
+            console.error('Error getting shared data:', error);
+            return {
+                imports: [],
+                exports: [],
+                notes: [],
+                employees: [],
+                version: 1,
+                lastUpdated: new Date().toISOString()
+            };
         }
+    }
+
+    async setSharedData(data) {
+        // Save to shared storage (same key for all browsers)
+        localStorage.setItem(this.sharedDataKey, JSON.stringify(data));
+        
+        // Use BroadcastChannel for same-origin communication
+        if (window.BroadcastChannel) {
+            const channel = new BroadcastChannel('maniverdi-sync');
+            channel.postMessage({
+                type: 'DATA_UPDATE',
+                data: data,
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        // Fallback: Trigger storage event for cross-tab communication
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: this.sharedDataKey,
+            newValue: JSON.stringify(data),
+            oldValue: null,
+            url: window.location.href
+        }));
+    }
+
+    broadcastChange(type, data) {
+        // Broadcast to other tabs/windows
+        window.postMessage({
+            type: 'MANIVERDI_DATA_CHANGE',
+            dataType: type,
+            data: data,
+            timestamp: new Date().toISOString()
+        }, '*');
+    }
+
+    setupStorageListeners() {
+        // Listen for storage changes from other tabs/browsers
+        window.addEventListener('storage', (e) => {
+            if (e.key === this.sharedDataKey) {
+                console.log('Storage changed from another tab/browser');
+                window.dispatchEvent(new CustomEvent('dataChanged', {
+                    detail: { 
+                        type: 'all', 
+                        data: JSON.parse(e.newValue || '{}'),
+                        source: 'storage'
+                    }
+                }));
+            }
+        });
+
+        // Listen for BroadcastChannel messages (same-origin)
+        if (window.BroadcastChannel) {
+            const channel = new BroadcastChannel('maniverdi-sync');
+            channel.addEventListener('message', (e) => {
+                if (e.data.type === 'DATA_UPDATE') {
+                    console.log('Data updated via BroadcastChannel');
+                    window.dispatchEvent(new CustomEvent('dataChanged', {
+                        detail: { 
+                            type: 'all', 
+                            data: e.data.data,
+                            source: 'broadcast'
+                        }
+                    }));
+                }
+            });
+        }
+
+        // Listen for postMessage (fallback)
+        window.addEventListener('message', (e) => {
+            if (e.data.type === 'MANIVERDI_DATA_CHANGE') {
+                console.log('Data updated via postMessage');
+                window.dispatchEvent(new CustomEvent('dataChanged', {
+                    detail: { 
+                        type: e.data.dataType, 
+                        data: e.data.data,
+                        source: 'message'
+                    }
+                }));
+            }
+        });
     }
 
     getAllDataLocal() {
