@@ -868,6 +868,262 @@
                 margin-top: 140px;
             }
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 0;
+            border: none;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            animation: modalShow 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        @keyframes modalShow {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #ff6b6b;
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.95em;
+        }
+
+        .form-group label i {
+            margin-left: 8px;
+            color: var(--primary-color);
+            width: 20px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background-color: var(--input-bg, white);
+            color: var(--text-color);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-cancel {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Dark mode adjustments */
+        [data-theme="dark"] .modal-content {
+            background-color: var(--card-bg);
+            border: 1px solid #444;
+        }
+
+        [data-theme="dark"] .form-group input,
+        [data-theme="dark"] .form-group textarea {
+            background-color: #2a2a2a;
+            border-color: #444;
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .btn-cancel {
+            background-color: #2a2a2a;
+            color: #ccc;
+            border-color: #444;
+        }
+
+        /* Enhanced Table Styling */
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-icon {
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .price-cell {
+            text-align: center;
+        }
+
+        .price-amount {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: var(--success-color, #27ae60);
+        }
+
+        .currency {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-right: 5px;
+        }
+
+        .notes-cell {
+            max-width: 200px;
+        }
+
+        .notes-text {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .date-cell {
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .date-icon {
+            color: var(--text-muted);
+            margin-left: 5px;
+        }
+
+        .date-text {
+            color: var(--text-muted);
+        }
+
+        /* RTL Support for enhanced elements */
+        [dir="rtl"] .product-info {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .currency {
+            margin-right: 0;
+            margin-left: 5px;
+        }
+
+        [dir="rtl"] .date-icon {
+            margin-left: 0;
+            margin-right: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -1161,6 +1417,58 @@
         </section>
     </main>
 
+    <!-- Add Item Modal -->
+    <div id="addItemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">إضافة عنصر جديد</h3>
+                <span class="close" onclick="closeAddModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addItemForm">
+                    <div class="form-group">
+                        <label for="productName" id="productNameLabel">
+                            <i class="fas fa-box"></i> اسم المنتج
+                        </label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="price" id="priceLabel">
+                            <i class="fas fa-euro-sign"></i> السعر (€)
+                        </label>
+                        <input type="number" id="price" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes" id="notesLabel">
+                            <i class="fas fa-sticky-note"></i> الملاحظات
+                        </label>
+                        <textarea id="notes" rows="3" placeholder="أدخل ملاحظاتك هنا..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date" id="dateLabel">
+                            <i class="fas fa-calendar"></i> التاريخ والوقت
+                        </label>
+                        <input type="datetime-local" id="date" required>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-cancel" onclick="closeAddModal()">
+                            <i class="fas fa-times"></i>
+                            <span id="cancelBtn">إلغاء</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            <span id="addBtn">إضافة</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="./init-data.js"></script>
     <script>
         // فحص فوري للمصادقة قبل تحميل أي شيء آخر
@@ -1270,7 +1578,7 @@
                 low: 'منخفض',
                 
                 // Currency
-                currency: 'د.ع',
+                currency: '€',
                 
                 // Stat descriptions
                 importsDesc: 'إجمالي العناصر المستوردة هذا الشهر',
@@ -1285,7 +1593,18 @@
                 deleteSuccess: 'تم حذف العنصر بنجاح!',
                 editInfo: 'ميزة التعديل ستكون متاحة قريباً في التحديث القادم',
                 confirmDelete: 'هل أنت متأكد من الحذف؟',
-                confirmLogout: 'هل أنت متأكد من تسجيل الخروج؟'
+                confirmLogout: 'هل أنت متأكد من تسجيل الخروج؟',
+                
+                // Modal texts
+                modalTitleImport: 'إضافة مستورد جديد',
+                modalTitleExport: 'إضافة مصدر جديد',
+                productNameLabel: 'اسم المنتج',
+                priceLabel: 'السعر (€)',
+                notesLabel: 'الملاحظات',
+                dateLabel: 'التاريخ والوقت',
+                cancelBtn: 'إلغاء',
+                addBtn: 'إضافة',
+                notesPlaceholder: 'أدخل ملاحظاتك هنا...'
             },
             en: {
                 // Header
@@ -1380,7 +1699,7 @@
                 low: 'Low',
                 
                 // Currency
-                currency: 'IQD',
+                currency: '€',
                 
                 // Stat descriptions
                 importsDesc: 'Total items imported this month',
@@ -1395,7 +1714,18 @@
                 deleteSuccess: 'Item deleted successfully!',
                 editInfo: 'Edit feature will be available soon in the next update',
                 confirmDelete: 'Are you sure you want to delete?',
-                confirmLogout: 'Are you sure you want to logout?'
+                confirmLogout: 'Are you sure you want to logout?',
+                
+                // Modal texts
+                modalTitleImport: 'Add New Import',
+                modalTitleExport: 'Add New Export',
+                productNameLabel: 'Product Name',
+                priceLabel: 'Price (€)',
+                notesLabel: 'Notes',
+                dateLabel: 'Date and Time',
+                cancelBtn: 'Cancel',
+                addBtn: 'Add',
+                notesPlaceholder: 'Enter your notes here...'
             },
             it: {
                 // Header
@@ -1490,7 +1820,7 @@
                 low: 'Basso',
                 
                 // Currency
-                currency: 'IQD',
+                currency: '€',
                 
                 // Stat descriptions
                 importsDesc: 'Totale articoli importati questo mese',
@@ -1505,7 +1835,18 @@
                 deleteSuccess: 'Elemento eliminato con successo!',
                 editInfo: 'La funzione di modifica sarà disponibile presto nel prossimo aggiornamento',
                 confirmDelete: 'Sei sicuro di voler eliminare?',
-                confirmLogout: 'Sei sicuro di voler disconnetterti?'
+                confirmLogout: 'Sei sicuro di voler disconnetterti?',
+                
+                // Modal texts
+                modalTitleImport: 'Aggiungi Nuova Importazione',
+                modalTitleExport: 'Aggiungi Nuova Esportazione',
+                productNameLabel: 'Nome Prodotto',
+                priceLabel: 'Prezzo (€)',
+                notesLabel: 'Note',
+                dateLabel: 'Data e Ora',
+                cancelBtn: 'Annulla',
+                addBtn: 'Aggiungi',
+                notesPlaceholder: 'Inserisci le tue note qui...'
             }
         };
         
@@ -1589,6 +1930,11 @@
             
             // Update stat labels and descriptions
             updateStatLabelsAndDescriptions();
+            
+            // Update modal language if it exists
+            if (document.getElementById('addItemModal')) {
+                updateModalLanguage();
+            }
             
             // Reload current section data to update table headers
             const activeSection = document.querySelector('.nav-item.active');
@@ -1788,7 +2134,7 @@
             const headers = table.querySelectorAll('th');
             if (headers.length >= 5) {
                 headers[0].innerHTML = `<i class="fas fa-box"></i> ${t.productName}`;
-                headers[1].innerHTML = `<i class="fas fa-dollar-sign"></i> ${t.price}`;
+                headers[1].innerHTML = `<i class="fas fa-euro-sign"></i> ${t.price}`;
                 headers[2].innerHTML = `<i class="fas fa-comment"></i> ${t.notes}`;
                 headers[3].innerHTML = `<i class="fas fa-calendar"></i> ${t.date}`;
                 headers[4].innerHTML = `<i class="fas fa-cogs"></i> ${t.actions}`;
@@ -1797,12 +2143,29 @@
             tableBody.innerHTML = '';
             
             imports.forEach(item => {
+                const displayDate = item.createdDateTime ? 
+                    new Date(item.createdDateTime).toLocaleString(currentLanguage === 'ar' ? 'ar-EG' : currentLanguage) :
+                    item.createdAt;
+                    
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><i class="fas fa-box" style="margin-left: 8px; color: var(--primary-color);"></i>${item.productName}</td>
-                    <td><strong>${item.price.toLocaleString()}</strong> ${t.currency}</td>
-                    <td>${item.notes}</td>
-                    <td><i class="fas fa-calendar" style="margin-left: 8px; color: var(--text-muted);"></i>${item.createdAt}</td>
+                    <td>
+                        <div class="product-info">
+                            <i class="fas fa-box product-icon"></i>
+                            <span class="product-name">${item.productName}</span>
+                        </div>
+                    </td>
+                    <td class="price-cell">
+                        <span class="price-amount">${item.price.toLocaleString()}</span>
+                        <span class="currency">${t.currency}</span>
+                    </td>
+                    <td class="notes-cell">
+                        <span class="notes-text">${item.notes || '-'}</span>
+                    </td>
+                    <td class="date-cell">
+                        <i class="fas fa-calendar date-icon"></i>
+                        <span class="date-text">${displayDate}</span>
+                    </td>
                     <td>
                         <div class="action-buttons">
                             <button class="action-btn edit-btn" onclick="editItem('import', '${item._id}')">
@@ -1828,7 +2191,7 @@
             const headers = table.querySelectorAll('th');
             if (headers.length >= 5) {
                 headers[0].innerHTML = `<i class="fas fa-box"></i> ${t.productName}`;
-                headers[1].innerHTML = `<i class="fas fa-dollar-sign"></i> ${t.price}`;
+                headers[1].innerHTML = `<i class="fas fa-euro-sign"></i> ${t.price}`;
                 headers[2].innerHTML = `<i class="fas fa-comment"></i> ${t.notes}`;
                 headers[3].innerHTML = `<i class="fas fa-calendar"></i> ${t.date}`;
                 headers[4].innerHTML = `<i class="fas fa-cogs"></i> ${t.actions}`;
@@ -1837,12 +2200,29 @@
             tableBody.innerHTML = '';
             
             exports.forEach(item => {
+                const displayDate = item.createdDateTime ? 
+                    new Date(item.createdDateTime).toLocaleString(currentLanguage === 'ar' ? 'ar-EG' : currentLanguage) :
+                    item.createdAt;
+                    
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><i class="fas fa-box" style="margin-left: 8px; color: var(--primary-color);"></i>${item.productName}</td>
-                    <td><strong>${item.price.toLocaleString()}</strong> ${t.currency}</td>
-                    <td>${item.notes}</td>
-                    <td><i class="fas fa-calendar" style="margin-left: 8px; color: var(--text-muted);"></i>${item.createdAt}</td>
+                    <td>
+                        <div class="product-info">
+                            <i class="fas fa-box product-icon"></i>
+                            <span class="product-name">${item.productName}</span>
+                        </div>
+                    </td>
+                    <td class="price-cell">
+                        <span class="price-amount">${item.price.toLocaleString()}</span>
+                        <span class="currency">${t.currency}</span>
+                    </td>
+                    <td class="notes-cell">
+                        <span class="notes-text">${item.notes || '-'}</span>
+                    </td>
+                    <td class="date-cell">
+                        <i class="fas fa-calendar date-icon"></i>
+                        <span class="date-text">${displayDate}</span>
+                    </td>
                     <td>
                         <div class="action-buttons">
                             <button class="action-btn edit-btn" onclick="editItem('export', '${item._id}')">
@@ -1999,7 +2379,106 @@
         }
         
         // CRUD Operations
+        let currentFormType = '';
+        
         function showAddForm(type) {
+            if (type !== 'import' && type !== 'export') {
+                // For now, keep the old behavior for other types
+                showOldAddForm(type);
+                return;
+            }
+            
+            currentFormType = type;
+            const t = translations[currentLanguage];
+            const modal = document.getElementById('addItemModal');
+            
+            // Update modal content based on type
+            const modalTitle = document.getElementById('modalTitle');
+            modalTitle.textContent = type === 'import' ? t.modalTitleImport : t.modalTitleExport;
+            
+            // Set current datetime
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('date').value = now.toISOString().slice(0, 16);
+            
+            // Clear form
+            document.getElementById('addItemForm').reset();
+            
+            // Update language for form elements
+            updateModalLanguage();
+            
+            // Show modal
+            modal.style.display = 'block';
+            
+            // Focus on first input
+            setTimeout(() => {
+                document.getElementById('productName').focus();
+            }, 300);
+        }
+
+        function updateModalLanguage() {
+            const t = translations[currentLanguage];
+            
+            // Update labels
+            document.getElementById('productNameLabel').innerHTML = `<i class="fas fa-box"></i> ${t.productNameLabel}`;
+            document.getElementById('priceLabel').innerHTML = `<i class="fas fa-euro-sign"></i> ${t.priceLabel}`;
+            document.getElementById('notesLabel').innerHTML = `<i class="fas fa-sticky-note"></i> ${t.notesLabel}`;
+            document.getElementById('dateLabel').innerHTML = `<i class="fas fa-calendar"></i> ${t.dateLabel}`;
+            
+            // Update buttons
+            document.getElementById('cancelBtn').textContent = t.cancelBtn;
+            document.getElementById('addBtn').textContent = t.addBtn;
+            
+            // Update placeholder
+            document.getElementById('notes').placeholder = t.notesPlaceholder;
+        }
+
+        function closeAddModal() {
+            document.getElementById('addItemModal').style.display = 'none';
+        }
+
+        // Handle form submission
+        document.getElementById('addItemForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const t = translations[currentLanguage];
+            const formData = new FormData(e.target);
+            
+            const data = {
+                _id: Date.now().toString(),
+                productName: document.getElementById('productName').value,
+                price: parseFloat(document.getElementById('price').value || 0),
+                notes: document.getElementById('notes').value || '',
+                createdAt: document.getElementById('date').value.split('T')[0],
+                createdDateTime: document.getElementById('date').value
+            };
+            
+            // Save to localStorage
+            const key = `maniverdi_${currentFormType}s`;
+            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            items.push(data);
+            localStorage.setItem(key, JSON.stringify(items));
+            
+            // Close modal
+            closeAddModal();
+            
+            // Reload data
+            loadSectionData(currentFormType + 's');
+            loadDashboardData();
+            
+            // Show success animation
+            showNotification(t.addSuccess, 'success');
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addItemModal');
+            if (event.target == modal) {
+                closeAddModal();
+            }
+        }
+
+        function showOldAddForm(type) {
             const t = translations[currentLanguage];
             const name = prompt(`${getFieldPrompt(type, t)}:`);
             if (!name) return;
@@ -2009,11 +2488,7 @@
                 createdAt: new Date().toISOString().split('T')[0] 
             };
             
-            if (type === 'import' || type === 'export') {
-                data.productName = name;
-                data.price = parseFloat(prompt(t.enterPrice) || 0);
-                data.notes = prompt(t.enterNotes) || '';
-            } else if (type === 'note') {
+            if (type === 'note') {
                 data.title = name;
                 data.content = prompt(t.enterContent) || '';
                 data.category = prompt(t.enterCategory) || 'عام';
