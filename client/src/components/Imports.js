@@ -43,7 +43,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import axios from '../utils/axiosConfig';
+import api from '../utils/axiosConfig';
 
 const Imports = () => {
   const { t } = useTranslation();
@@ -76,7 +76,7 @@ const Imports = () => {
   const fetchImports = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/imports');
+      const response = api.getImports ? await api.getImports() : await api.get('/imports');
       setImports(response.data.imports || []);
       setTotalAmount(response.data.totalAmount || 0);
     } catch (error) {
@@ -145,10 +145,10 @@ const Imports = () => {
 
       if (editingImport) {
         // Update existing import
-        await axios.put(`/api/imports/${editingImport._id}`, importData);
+        await (api.updateImport ? api.updateImport(editingImport._id, importData) : api.put(`/imports/${editingImport._id}`, importData));
       } else {
         // Create new import
-        await axios.post('/api/imports', importData);
+        await (api.createImport ? api.createImport(importData) : api.post('/imports', importData));
       }
 
       setDialogOpen(false);
@@ -160,7 +160,7 @@ const Imports = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/imports/${selectedImport._id}`);
+      await (api.deleteImport ? api.deleteImport(selectedImport._id) : api.delete(`/imports/${selectedImport._id}`));
       setDeleteDialogOpen(false);
       setSelectedImport(null);
       fetchImports();

@@ -47,7 +47,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import axios from '../utils/axiosConfig';
+import api from '../utils/axiosConfig';
 
 const Users = () => {
   const { t } = useTranslation();
@@ -86,7 +86,7 @@ const Users = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/users');
+      const response = api.getUsers ? await api.getUsers() : await api.get('/users');
       setUsers(response.data.users || []);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -155,9 +155,9 @@ const Users = () => {
       }
 
       if (editingUser) {
-        await axios.put(`/api/users/${editingUser._id}`, userData);
+        await (api.updateUser ? api.updateUser(editingUser._id, userData) : api.put(`/users/${editingUser._id}`, userData));
       } else {
-        await axios.post('/api/users', userData);
+        await (api.createUser ? api.createUser(userData) : api.post('/users', userData));
       }
 
       setDialogOpen(false);
@@ -172,7 +172,7 @@ const Users = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/users/${selectedUser._id}`);
+      await (api.deleteUser ? api.deleteUser(selectedUser._id) : api.delete(`/users/${selectedUser._id}`));
       setDeleteDialogOpen(false);
       setSelectedUser(null);
       fetchUsers();

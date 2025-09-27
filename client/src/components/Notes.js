@@ -48,7 +48,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import axios from '../utils/axiosConfig';
+import api from '../utils/axiosConfig';
 
 const Notes = () => {
   const { t } = useTranslation();
@@ -96,7 +96,7 @@ const Notes = () => {
   const fetchNotes = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/notes');
+      const response = api.getNotes ? await api.getNotes() : await api.get('/notes');
       setNotes(response.data.notes || []);
     } catch (error) {
       console.error('Error fetching notes:', error);
@@ -168,9 +168,9 @@ const Notes = () => {
       };
 
       if (editingNote) {
-        await axios.put(`/api/notes/${editingNote._id}`, noteData);
+        await (api.updateNote ? api.updateNote(editingNote._id, noteData) : api.put(`/notes/${editingNote._id}`, noteData));
       } else {
-        await axios.post('/api/notes', noteData);
+        await (api.createNote ? api.createNote(noteData) : api.post('/notes', noteData));
       }
 
       setDialogOpen(false);
@@ -182,7 +182,7 @@ const Notes = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/notes/${selectedNote._id}`);
+      await (api.deleteNote ? api.deleteNote(selectedNote._id) : api.delete(`/notes/${selectedNote._id}`));
       setDeleteDialogOpen(false);
       setSelectedNote(null);
       fetchNotes();

@@ -41,7 +41,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import axios from '../utils/axiosConfig';
+import api from '../utils/axiosConfig';
 
 const StatsCard = ({ title, value, icon, color, growth, loading }) => {
   const theme = useTheme();
@@ -162,10 +162,10 @@ const Dashboard = () => {
         employeesRes,
         notesRes
       ] = await Promise.all([
-        axios.get('/api/imports?limit=5'),
-        axios.get('/api/exports?limit=5'),
-        axios.get('/api/employees?limit=5'),
-        axios.get('/api/notes?limit=5')
+        api.getImports ? api.getImports() : api.get('/imports?limit=5'),
+        api.getExports ? api.getExports() : api.get('/exports?limit=5'),
+        api.getEmployees ? api.getEmployees() : api.get('/employees?limit=5'),
+        api.getNotes ? api.getNotes() : api.get('/notes?limit=5')
       ]);
 
       setStats({

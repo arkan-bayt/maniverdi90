@@ -45,7 +45,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import axios from '../utils/axiosConfig';
+import api from '../utils/axiosConfig';
 
 const Employees = () => {
   const { t } = useTranslation();
@@ -79,7 +79,7 @@ const Employees = () => {
   const fetchEmployees = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/employees');
+      const response = api.getEmployees ? await api.getEmployees() : await api.get('/employees');
       setEmployees(response.data.employees || []);
       setTotalSalary(response.data.totalSalary || 0);
     } catch (error) {
@@ -159,9 +159,9 @@ const Employees = () => {
       };
 
       if (editingEmployee) {
-        await axios.put(`/api/employees/${editingEmployee._id}`, employeeData);
+        await (api.updateEmployee ? api.updateEmployee(editingEmployee._id, employeeData) : api.put(`/employees/${editingEmployee._id}`, employeeData));
       } else {
-        await axios.post('/api/employees', employeeData);
+        await (api.createEmployee ? api.createEmployee(employeeData) : api.post('/employees', employeeData));
       }
 
       setDialogOpen(false);
@@ -173,7 +173,7 @@ const Employees = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/employees/${selectedEmployee._id}`);
+      await (api.deleteEmployee ? api.deleteEmployee(selectedEmployee._id) : api.delete(`/employees/${selectedEmployee._id}`));
       setDeleteDialogOpen(false);
       setSelectedEmployee(null);
       fetchEmployees();

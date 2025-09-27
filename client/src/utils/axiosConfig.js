@@ -1,11 +1,19 @@
 import axios from 'axios';
+import MockAPI from './mockAPI';
 
-// Set base URL for API calls
+// For GitHub Pages deployment, use mock API
+const USE_MOCK_API = process.env.NODE_ENV === 'production';
+
+// Set base URL for API calls when using real backend
 const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
-axios.defaults.baseURL = BASE_URL;
+
+// Create axios instance
+const api = axios.create({
+  baseURL: BASE_URL
+});
 
 // Request interceptor to add auth token
-axios.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -19,7 +27,7 @@ axios.interceptors.request.use(
 );
 
 // Response interceptor to handle token expiration
-axios.interceptors.response.use(
+api.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -27,7 +35,7 @@ axios.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token expired or invalid
       localStorage.removeItem('token');
-      delete axios.defaults.headers.common['Authorization'];
+      delete api.defaults.headers.common['Authorization'];
       
       // Redirect to login if not already there
       if (window.location.pathname !== '/login') {
@@ -38,4 +46,8 @@ axios.interceptors.response.use(
   }
 );
 
-export default axios;
+// Create mock API instance for GitHub Pages
+const mockAPI = new MockAPI();
+
+// Export appropriate API based on environment
+export default USE_MOCK_API ? mockAPI : api;
