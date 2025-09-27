@@ -1,11 +1,23 @@
 {
-  "buildCommand": "cd client && npm install && npm run build",
-  "outputDirectory": "client/build",
-  "framework": null,
-  "rewrites": [
+  "version": 2,
+  "name": "maniverdi90",
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/client/build/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/client/build/index.html"
     }
   ]
 }

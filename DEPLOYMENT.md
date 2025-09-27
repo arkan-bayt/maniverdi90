@@ -31,9 +31,21 @@
 
 ### ج) نشر على Vercel:
 
+#### الطريقة الأولى - من GitHub (الأفضل):
 1. اذهب إلى [vercel.com](https://vercel.com)
-2. انشئ مشروع جديد
-3. حمّل مجلد `build/`
+2. انقر "New Project" 
+3. اتصل بـ GitHub واختر repository: `arkan-bayt/maniverdi90`
+4. Vercel سيستخدم `vercel.json` تلقائياً ✅
+
+#### الطريقة الثانية - المجلد المنفصل:
+1. استخدم المجلد: `/home/arkan/Desktop/maniverdi-deploy/`
+2. أو الملف المضغوط: `/home/arkan/Desktop/maniverdi-vercel-ready.tar.gz`
+3. حمّل المجلد مباشرة إلى Vercel
+
+#### إصلاح خطأ react-scripts:
+إذا واجهت خطأ `react-scripts: command not found`:
+- تأكد من أن Vercel يقرأ `vercel.json` 
+- أو استخدم المجلد المنفصل `maniverdi-deploy`
 
 ### د) نشر على Firebase Hosting:
 

@@ -1,0 +1,10 @@
+server/
+node_modules/
+*.log
+.git/
+*.md
+.github/
+client/node_modules/
+client/src/
+client/public/
+client/package-lock.json
