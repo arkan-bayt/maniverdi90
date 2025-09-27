@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema di Gestione Mani Verdi - Accesso</title>
+    <title>Mani Verdi - Sistema di Gestione</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-hover: 0 15px 40px rgba(31, 38, 135, 0.5);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,188 +28,325 @@
         }
 
         body {
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
             position: relative;
         }
 
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
+        /* Animated Background Elements */
+        .bg-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            right: 30%;
+            animation-delay: 1s;
+        }
+
+        .shape:nth-child(5) {
+            width: 90px;
+            height: 90px;
+            bottom: 30%;
+            right: 20%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        /* Main Container */
+        .login-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-soft);
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            transform: translateY(0);
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .login-container:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Language Selector */
         .language-selector {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             display: flex;
-            gap: 5px;
+            gap: 8px;
+            z-index: 20;
         }
 
         .lang-btn {
-            background: none;
-            border: 2px solid #ddd;
-            padding: 5px 8px;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 25px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 600;
+            color: white;
             transition: all 0.3s ease;
-            color: #666;
+            backdrop-filter: blur(10px);
         }
 
         .lang-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         .lang-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: var(--primary-gradient);
             border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Logo Section */
+        .logo-section {
+            margin-bottom: 40px;
         }
 
         .logo {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: var(--primary-gradient);
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 20px auto;
+            position: relative;
+            animation: logoGlow 3s ease-in-out infinite alternate;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .logo i {
+            font-size: 36px;
             color: white;
-            font-size: 24px;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
-        h1 {
-            color: #333;
-            margin: 20px 0 10px;
-            font-size: 24px;
-            font-weight: 600;
+        @keyframes logoGlow {
+            0% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.5); }
+            100% { box-shadow: 0 0 50px rgba(102, 126, 234, 0.8); }
         }
 
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-            line-height: 1.5;
+        .brand-text h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Form Styles */
+        .login-form {
+            margin-top: 30px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: left;
+            position: relative;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
+            color: white;
+            font-weight: 500;
             font-size: 14px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .input-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
+            padding: 16px 20px 16px 50px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             font-size: 16px;
+            font-weight: 400;
+            color: white;
             transition: all 0.3s ease;
-            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
         }
 
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            z-index: 2;
+        }
+
+        /* Button Styles */
         .login-btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 16px;
+            background: var(--primary-gradient);
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
+            color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            margin-top: 20px;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+        }
+
+        .login-btn:active {
+            transform: translateY(-1px);
         }
 
         .login-btn:disabled {
             opacity: 0.7;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .message {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        .success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        /* RTL Support */
-        [dir="rtl"] .form-group {
-            text-align: right;
-        }
-
-        [dir="rtl"] .language-selector {
-            left: 15px;
-            right: auto;
+        .btn-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
         }
 
         /* Loading Animation */
-        .loading {
+        .loading-spinner {
             display: none;
             width: 20px;
             height: 20px;
-            border: 2px solid #ffffff;
-            border-top: 2px solid transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -204,52 +356,205 @@
             100% { transform: rotate(360deg); }
         }
 
-        .login-btn.loading .loading {
+        .login-btn.loading .loading-spinner {
             display: block;
         }
 
-        /* Responsive Design */
-        @media (max-width: 480px) {
-            .login-container {
-                margin: 20px;
-                padding: 30px 25px;
+        .login-btn.loading .btn-text {
+            opacity: 0.7;
+        }
+
+        /* Message Styles */
+        .message-container {
+            margin-top: 25px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            border: 1px solid transparent;
+            animation: messageSlideIn 0.5s ease;
+            text-align: center;
+        }
+
+        @keyframes messageSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
+
+        .message.success {
+            background: rgba(17, 153, 142, 0.2);
+            color: #38ef7d;
+            border-color: rgba(56, 239, 125, 0.3);
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.2);
+        }
+
+        .message.error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #ff6b6b;
+            border-color: rgba(255, 107, 107, 0.3);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .form-group {
+            text-align: right;
+        }
+
+        [dir="rtl"] .input-icon {
+            left: auto;
+            right: 18px;
+        }
+
+        [dir="rtl"] .form-group input {
+            padding: 16px 50px 16px 20px;
+        }
+
+        [dir="rtl"] .language-selector {
+            left: 20px;
+            right: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 20px;
+                padding: 40px 30px;
+                max-width: 380px;
+            }
+            
+            .brand-text h1 {
+                font-size: 28px;
+            }
+            
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .logo i {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 15px;
+                padding: 35px 25px;
+            }
+            
+            .brand-text h1 {
+                font-size: 24px;
+            }
+            
+            .brand-text p {
+                font-size: 14px;
+            }
+        }
+
+        /* Enhanced Focus States */
+        .form-group input:focus + .input-icon {
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Subtle Animations */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-container > * {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .login-container > *:nth-child(1) { animation-delay: 0.1s; }
+        .login-container > *:nth-child(2) { animation-delay: 0.2s; }
+        .login-container > *:nth-child(3) { animation-delay: 0.3s; }
+        .login-container > *:nth-child(4) { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
+    <!-- Background Decorations -->
+    <div class="bg-decoration">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    </div>
+
+    <!-- Main Login Container -->
     <div class="login-container">
+        <!-- Language Selector -->
         <div class="language-selector">
             <button class="lang-btn" onclick="changeLanguage('ar')" id="lang-ar">عربي</button>
             <button class="lang-btn" onclick="changeLanguage('en')" id="lang-en">EN</button>
             <button class="lang-btn active" onclick="changeLanguage('it')" id="lang-it">IT</button>
         </div>
 
-        <div class="logo">
-            <i class="fas fa-leaf"></i>
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <div class="logo">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="brand-text">
+                <h1 id="brandTitle">Mani Verdi</h1>
+                <p id="brandSubtitle">Sistema di Gestione Avanzato</p>
+            </div>
         </div>
-        
-        <h1 id="title">Accesso</h1>
-        <p class="subtitle" id="subtitle">Inserisci i tuoi dati per accedere al Sistema di Gestione Mani Verdi</p>
-        
-        <form id="loginForm">
+
+        <!-- Login Form -->
+        <form class="login-form" id="loginForm">
             <div class="form-group">
                 <label for="username" id="usernameLabel">Nome Utente</label>
-                <input type="text" id="username" name="username" required>
+                <div class="input-container">
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                    <i class="fas fa-user input-icon"></i>
+                </div>
             </div>
             
             <div class="form-group">
                 <label for="password" id="passwordLabel">Password</label>
-                <input type="password" id="password" name="password" required>
+                <div class="input-container">
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
             </div>
             
             <button type="submit" class="login-btn" id="loginBtn">
-                <span id="loginText">Accedi</span>
-                <div class="loading"></div>
+                <div class="btn-content">
+                    <span class="btn-text" id="loginText">Accedi</span>
+                    <div class="loading-spinner"></div>
+                </div>
             </button>
-            
-            <div id="message"></div>
         </form>
+
+        <!-- Message Container -->
+        <div class="message-container">
+            <div id="message"></div>
+        </div>
     </div>
 
     <script>
@@ -257,41 +562,44 @@
         
         const translations = {
             ar: {
-                title: 'تسجيل الدخول',
-                subtitle: 'أدخل بياناتك للوصول إلى نظام إدارة مناي ڤيردي',
+                brandTitle: 'مناي ڤيردي',
+                brandSubtitle: 'نظام إدارة متقدم',
                 usernameLabel: 'اسم المستخدم',
                 passwordLabel: 'كلمة المرور',
                 loginText: 'تسجيل الدخول',
-                welcomeMessage: 'مرحباً {name}! جاري التوجيه...',
-                errorMessage: 'اسم المستخدم أو كلمة المرور غير صحيحة',
-                alreadyLoggedIn: 'تم تسجيل الدخول مسبقاً. جاري التوجيه...',
-                pageTitle: 'نظام إدارة مناي ڤيردي - تسجيل الدخول',
+                welcomeMessage: 'أهلاً وسهلاً {name}!',
+                redirecting: 'جاري التوجيه...',
+                errorMessage: 'بيانات الدخول غير صحيحة',
+                alreadyLoggedIn: 'مرحباً! جاري التوجيه للوحة التحكم...',
+                pageTitle: 'مناي ڤيردي - نظام الإدارة',
                 superuserName: 'المدير العام',
                 userName: 'مناي'
             },
             en: {
-                title: 'Login',
-                subtitle: 'Enter your credentials to access Mani Verdi Management System',
+                brandTitle: 'Mani Verdi',
+                brandSubtitle: 'Advanced Management System',
                 usernameLabel: 'Username',
                 passwordLabel: 'Password',
-                loginText: 'Login',
-                welcomeMessage: 'Welcome {name}! Redirecting...',
-                errorMessage: 'Invalid username or password',
-                alreadyLoggedIn: 'Already logged in. Redirecting...',
-                pageTitle: 'Mani Verdi Management System - Login',
+                loginText: 'Sign In',
+                welcomeMessage: 'Welcome {name}!',
+                redirecting: 'Redirecting...',
+                errorMessage: 'Invalid credentials',
+                alreadyLoggedIn: 'Welcome back! Redirecting to dashboard...',
+                pageTitle: 'Mani Verdi - Management System',
                 superuserName: 'General Manager',
                 userName: 'Mani'
             },
             it: {
-                title: 'Accesso',
-                subtitle: 'Inserisci i tuoi dati per accedere al Sistema di Gestione Mani Verdi',
+                brandTitle: 'Mani Verdi',
+                brandSubtitle: 'Sistema di Gestione Avanzato',
                 usernameLabel: 'Nome Utente',
                 passwordLabel: 'Password',
                 loginText: 'Accedi',
-                welcomeMessage: 'Benvenuto {name}! Reindirizzamento...',
-                errorMessage: 'Nome utente o password non validi',
-                alreadyLoggedIn: 'Già effettuato l\'accesso. Reindirizzamento...',
-                pageTitle: 'Sistema di Gestione Mani Verdi - Accesso',
+                welcomeMessage: 'Benvenuto {name}!',
+                redirecting: 'Reindirizzamento...',
+                errorMessage: 'Credenziali non valide',
+                alreadyLoggedIn: 'Bentornato! Reindirizzamento alla dashboard...',
+                pageTitle: 'Mani Verdi - Sistema di Gestione',
                 superuserName: 'Direttore Generale',
                 userName: 'Mani'
             }
@@ -308,9 +616,11 @@
         function changeLanguage(lang) {
             currentLanguage = lang;
             
+            // Update active button
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`lang-${lang}`).classList.add('active');
             
+            // Update page direction and language
             const html = document.documentElement;
             if (lang === 'ar') {
                 html.setAttribute('dir', 'rtl');
@@ -328,16 +638,19 @@
             const t = translations[currentLanguage];
             
             document.title = t.pageTitle;
-            document.getElementById('title').textContent = t.title;
-            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('brandTitle').textContent = t.brandTitle;
+            document.getElementById('brandSubtitle').textContent = t.brandSubtitle;
             document.getElementById('usernameLabel').textContent = t.usernameLabel;
             document.getElementById('passwordLabel').textContent = t.passwordLabel;
             document.getElementById('loginText').textContent = t.loginText;
             
-            const messageDiv = document.getElementById('message');
-            if (messageDiv.innerHTML) {
-                messageDiv.innerHTML = '';
-            }
+            // Clear message
+            document.getElementById('message').innerHTML = '';
+        }
+
+        function showMessage(text, type = 'success') {
+            const messageContainer = document.getElementById('message');
+            messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
         }
 
         function initializeLanguage() {
@@ -345,15 +658,21 @@
             changeLanguage(savedLanguage);
         }
 
+        // Login form handling
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
-            const messageDiv = document.getElementById('message');
             const loginBtn = document.getElementById('loginBtn');
             const t = translations[currentLanguage];
             
+            if (!username || !password) {
+                showMessage(t.errorMessage, 'error');
+                return;
+            }
+            
+            // Show loading state
             loginBtn.classList.add('loading');
             loginBtn.disabled = true;
             
@@ -362,9 +681,9 @@
                 const user = users.find(u => u.username === username && u.password === password);
                 
                 if (user) {
-                    const welcomeMessage = t.welcomeMessage.replace('{name}', user.name);
-                    messageDiv.innerHTML = `<div class="message success">${welcomeMessage}</div>`;
+                    showMessage(`${t.welcomeMessage.replace('{name}', user.name)} ${t.redirecting}`, 'success');
                     
+                    // Save user data
                     localStorage.setItem('currentUser', JSON.stringify({
                         username: user.username,
                         role: user.role,
@@ -373,33 +692,53 @@
                     
                     localStorage.setItem('language', currentLanguage);
                     
+                    // Redirect after animation
                     setTimeout(() => {
                         window.location.href = './modern-dashboard.html';
-                    }, 2000);
+                    }, 2500);
                     
                 } else {
-                    messageDiv.innerHTML = `<div class="message error">${t.errorMessage}</div>`;
+                    showMessage(t.errorMessage, 'error');
+                    
+                    // Remove loading state
                     loginBtn.classList.remove('loading');
                     loginBtn.disabled = false;
+                    
+                    // Clear password
                     document.getElementById('password').value = '';
+                    document.getElementById('password').focus();
                 }
-            }, 1000);
+            }, 1200);
         });
 
+        // Check existing login
         function checkExistingLogin() {
             const currentUser = localStorage.getItem('currentUser');
             if (currentUser) {
                 const t = translations[currentLanguage];
-                document.getElementById('message').innerHTML = `<div class="message success">${t.alreadyLoggedIn}</div>`;
+                showMessage(t.alreadyLoggedIn, 'success');
                 setTimeout(() => {
                     window.location.href = './modern-dashboard.html';
-                }, 1500);
+                }, 2000);
             }
         }
 
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             initializeLanguage();
             checkExistingLogin();
+            
+            // Add focus to first input
+            setTimeout(() => {
+                document.getElementById('username').focus();
+            }, 800);
+        });
+
+        // Handle Enter key navigation
+        document.getElementById('username').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('password').focus();
+            }
         });
     </script>
 </body>
