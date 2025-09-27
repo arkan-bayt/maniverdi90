@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="it" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة مناي ڤيردي - تسجيل الدخول</title>
+    <title>Sistema di Gestione Mani Verdi - Accesso</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -14,7 +15,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
+
         .login-container {
             background: white;
             padding: 40px;
@@ -23,7 +26,52 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Language Selector */
+        .language-selector {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 2px solid #ddd;
+            padding: 5px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .lang-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
         .logo {
             width: 80px;
             height: 80px;
@@ -32,23 +80,145 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
+            margin: 20px auto 20px;
             color: white;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
+
         h1 {
             color: #333;
             margin-bottom: 10px;
             font-size: 24px;
+            font-weight: 600;
         }
-        p {
+
+        .subtitle {
             color: #666;
             margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 1.5;
         }
+
         .form-group {
             margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .form-group {
             text-align: right;
+        }
+
+        [dir="rtl"] .language-selector {
+            left: 15px;
+            right: auto;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .login-btn.loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-btn.loading .loading {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                padding: 30px 25px;
+            }
+        }
+    </style>
         }
         label {
             display: block;
@@ -100,71 +270,203 @@
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">MV</div>
-        <h1>تسجيل الدخول</h1>
-        <p>أدخل بياناتك للوصول إلى نظام إدارة مناي ڤيردي</p>
+        <!-- Language Selector -->
+        <div class="language-selector">
+            <button class="lang-btn" onclick="changeLanguage('ar')" id="lang-ar">عربي</button>
+            <button class="lang-btn" onclick="changeLanguage('en')" id="lang-en">EN</button>
+            <button class="lang-btn active" onclick="changeLanguage('it')" id="lang-it">IT</button>
+        </div>
+
+        <div class="logo">
+            <i class="fas fa-leaf"></i>
+        </div>
+        
+        <h1 id="title">Accesso</h1>
+        <p class="subtitle" id="subtitle">Inserisci i tuoi dati per accedere al Sistema di Gestione Mani Verdi</p>
         
         <form id="loginForm">
             <div class="form-group">
-                <label for="username">اسم المستخدم</label>
+                <label for="username" id="usernameLabel">Nome Utente</label>
                 <input type="text" id="username" name="username" required>
             </div>
             
             <div class="form-group">
-                <label for="password">كلمة المرور</label>
+                <label for="password" id="passwordLabel">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
             
-            <button type="submit" class="login-btn">تسجيل الدخول</button>
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span id="loginText">Accedi</span>
+                <div class="loading"></div>
+            </button>
             
             <div id="message"></div>
         </form>
     </div>
 
     <script>
-        // Mock user data - في الإنتاج يجب أن تكون هذه البيانات محمية على الخادم
+        // Language system
+        let currentLanguage = 'it'; // Start with Italian
+        
+        const translations = {
+            ar: {
+                title: 'تسجيل الدخول',
+                subtitle: 'أدخل بياناتك للوصول إلى نظام إدارة مناي ڤيردي',
+                usernameLabel: 'اسم المستخدم',
+                passwordLabel: 'كلمة المرور',
+                loginText: 'تسجيل الدخول',
+                welcomeMessage: 'مرحباً {name}! جاري التوجيه...',
+                errorMessage: 'اسم المستخدم أو كلمة المرور غير صحيحة',
+                alreadyLoggedIn: 'تم تسجيل الدخول مسبقاً. جاري التوجيه...',
+                pageTitle: 'نظام إدارة مناي ڤيردي - تسجيل الدخول'
+            },
+            en: {
+                title: 'Login',
+                subtitle: 'Enter your credentials to access Mani Verdi Management System',
+                usernameLabel: 'Username',
+                passwordLabel: 'Password',
+                loginText: 'Login',
+                welcomeMessage: 'Welcome {name}! Redirecting...',
+                errorMessage: 'Invalid username or password',
+                alreadyLoggedIn: 'Already logged in. Redirecting...',
+                pageTitle: 'Mani Verdi Management System - Login'
+            },
+            it: {
+                title: 'Accesso',
+                subtitle: 'Inserisci i tuoi dati per accedere al Sistema di Gestione Mani Verdi',
+                usernameLabel: 'Nome Utente',
+                passwordLabel: 'Password',
+                loginText: 'Accedi',
+                welcomeMessage: 'Benvenuto {name}! Reindirizzamento...',
+                errorMessage: 'Nome utente o password non validi',
+                alreadyLoggedIn: 'Già effettuato l\'accesso. Reindirizzamento...',
+                pageTitle: 'Sistema di Gestione Mani Verdi - Accesso'
+            }
+        };
+
+        // Mock user data
         const users = [
             { username: 'iraq', password: 'iraq', role: 'superuser', name: 'المدير العام' },
             { username: 'mani', password: 'mani', role: 'user', name: 'مناي' }
         ];
 
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`lang-${lang}`).classList.add('active');
+            
+            // Update page direction and language
+            const html = document.documentElement;
+            if (lang === 'ar') {
+                html.setAttribute('dir', 'rtl');
+                html.setAttribute('lang', 'ar');
+            } else {
+                html.setAttribute('dir', 'ltr');
+                html.setAttribute('lang', lang);
+            }
+            
+            // Update all text content
+            updatePageContent();
+            
+            // Save language preference
+            localStorage.setItem('loginLanguage', lang);
+        }
+
+        function updatePageContent() {
+            const t = translations[currentLanguage];
+            
+            // Update document title
+            document.title = t.pageTitle;
+            
+            // Update text content
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('usernameLabel').textContent = t.usernameLabel;
+            document.getElementById('passwordLabel').textContent = t.passwordLabel;
+            document.getElementById('loginText').textContent = t.loginText;
+            
+            // Clear any existing messages
+            const messageDiv = document.getElementById('message');
+            if (messageDiv.textContent) {
+                messageDiv.innerHTML = '';
+            }
+        }
+
+        // Initialize language on page load
+        function initializeLanguage() {
+            const savedLanguage = localStorage.getItem('loginLanguage') || 'it';
+            changeLanguage(savedLanguage);
+        }
+
+        // Login form handling
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const messageDiv = document.getElementById('message');
+            const loginBtn = document.getElementById('loginBtn');
+            const t = translations[currentLanguage];
             
-            const user = users.find(u => u.username === username && u.password === password);
+            // Show loading state
+            loginBtn.classList.add('loading');
+            loginBtn.disabled = true;
             
-            if (user) {
-                messageDiv.innerHTML = `<div class="success">مرحباً ${user.name}! جاري التوجيه...</div>`;
+            // Simulate loading delay
+            setTimeout(() => {
+                const user = users.find(u => u.username === username && u.password === password);
                 
-                // حفظ بيانات المستخدم في localStorage
-                localStorage.setItem('currentUser', JSON.stringify({
-                    username: user.username,
-                    role: user.role,
-                    name: user.name
-                }));
-                
-                // التوجيه إلى الصفحة الرئيسية بعد ثانيتين
+                if (user) {
+                    const welcomeMessage = t.welcomeMessage.replace('{name}', user.name);
+                    messageDiv.innerHTML = `<div class="message success">${welcomeMessage}</div>`;
+                    
+                    // Save user data and language preference
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        username: user.username,
+                        role: user.role,
+                        name: user.name
+                    }));
+                    
+                    // Save current language to carry over to dashboard
+                    localStorage.setItem('language', currentLanguage);
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = './modern-dashboard.html';
+                    }, 2000);
+                    
+                } else {
+                    messageDiv.innerHTML = `<div class="message error">${t.errorMessage}</div>`;
+                    
+                    // Remove loading state
+                    loginBtn.classList.remove('loading');
+                    loginBtn.disabled = false;
+                    
+                    // Clear form
+                    document.getElementById('password').value = '';
+                }
+            }, 1000);
+        });
+
+        // Check if already logged in
+        function checkExistingLogin() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const t = translations[currentLanguage];
+                document.getElementById('message').innerHTML = `<div class="message success">${t.alreadyLoggedIn}</div>`;
                 setTimeout(() => {
                     window.location.href = './modern-dashboard.html';
-                }, 2000);
-                
-            } else {
-                messageDiv.innerHTML = '<div class="error">اسم المستخدم أو كلمة المرور غير صحيحة</div>';
+                }, 1500);
             }
-        });
-        
-        // التحقق من وجود مستخدم مسجل مسبقاً
-        const currentUser = localStorage.getItem('currentUser');
-        if (currentUser) {
-            document.getElementById('message').innerHTML = '<div class="success">تم تسجيل الدخول مسبقاً. جاري التوجيه...</div>';
-            setTimeout(() => {
-                window.location.href = './modern-dashboard.html';
-            }, 1500);
         }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLanguage();
+            checkExistingLogin();
+        });
     </script>
 </body>
 </html>
