@@ -1213,27 +1213,27 @@
             </div>
             
             <nav class="nav">
-                <div class="nav-item active" onclick="showSection('dashboard', this)">
+                <div class="nav-item active" onclick="showSectionSync('dashboard', this)">
                     <i class="fas fa-chart-pie nav-icon"></i>
                     <span id="nav-dashboard">لوحة التحكم</span>
                 </div>
-                <div class="nav-item" onclick="showSection('imports', this)">
+                <div class="nav-item" onclick="showSectionSync('imports', this)">
                     <i class="fas fa-download nav-icon"></i>
                     <span id="nav-imports">المستوردات</span>
                 </div>
-                <div class="nav-item" onclick="showSection('exports', this)">
+                <div class="nav-item" onclick="showSectionSync('exports', this)">
                     <i class="fas fa-upload nav-icon"></i>
                     <span id="nav-exports">المصدرات</span>
                 </div>
-                <div class="nav-item" onclick="showSection('notes', this)">
+                <div class="nav-item" onclick="showSectionSync('notes', this)">
                     <i class="fas fa-sticky-note nav-icon"></i>
                     <span id="nav-notes">الملاحظات</span>
                 </div>
-                <div class="nav-item" onclick="showSection('employees', this)">
+                <div class="nav-item" onclick="showSectionSync('employees', this)">
                     <i class="fas fa-users nav-icon"></i>
                     <span id="nav-employees">الموظفين</span>
                 </div>
-                <div class="nav-item hidden" id="usersNav" onclick="showSection('users', this)">
+                <div class="nav-item hidden" id="usersNav" onclick="showSectionSync('users', this)">
                     <i class="fas fa-user-cog nav-icon"></i>
                     <span id="nav-users">المستخدمين</span>
                 </div>
@@ -2176,7 +2176,7 @@
         }
         
         // Navigation
-        function showSection(sectionName, element) {
+        async function showSection(sectionName, element) {
             // Hide all sections
             document.querySelectorAll('.dashboard-section, .content-section').forEach(section => {
                 section.classList.remove('active');
@@ -2203,38 +2203,43 @@
             }
             
             // Load section data
-            loadSectionData(sectionName);
+            await loadSectionData(sectionName);
+        }
+        
+        // Wrapper function for onclick events
+        function showSectionSync(sectionName, element) {
+            showSection(sectionName, element);
         }
         
         // Data Loading
-        function loadSectionData(sectionName) {
+        async function loadSectionData(sectionName) {
             switch(sectionName) {
                 case 'dashboard':
-                    loadDashboardData();
+                    await loadDashboardData();
                     break;
                 case 'imports':
-                    loadImports();
+                    await loadImports();
                     break;
                 case 'exports':
-                    loadExports();
+                    await loadExports();
                     break;
                 case 'notes':
-                    loadNotes();
+                    await loadNotes();
                     break;
                 case 'employees':
-                    loadEmployees();
+                    await loadEmployees();
                     break;
                 case 'users':
-                    loadUsers();
+                    await loadUsers();
                     break;
             }
         }
         
-        function loadDashboardData() {
-            const imports = JSON.parse(localStorage.getItem('maniverdi_imports') || '[]');
-            const exports = JSON.parse(localStorage.getItem('maniverdi_exports') || '[]');
-            const notes = JSON.parse(localStorage.getItem('maniverdi_notes') || '[]');
-            const employees = JSON.parse(localStorage.getItem('maniverdi_employees') || '[]');
+        async function loadDashboardData() {
+            const imports = await window.cloudStorage.loadData('imports');
+            const exports = await window.cloudStorage.loadData('exports');
+            const notes = await window.cloudStorage.loadData('notes');
+            const employees = await window.cloudStorage.loadData('employees');
             
             // Animate counters
             animateCounter('importsCount', imports.length);
@@ -2260,8 +2265,8 @@
             }, stepTime);
         }
         
-        function loadImports() {
-            const imports = JSON.parse(localStorage.getItem('maniverdi_imports') || '[]');
+        async function loadImports() {
+            const imports = await window.cloudStorage.loadData('imports');
             const tableBody = document.getElementById('importsTable');
             const t = translations[currentLanguage];
             
@@ -2317,8 +2322,8 @@
             });
         }
         
-        function loadExports() {
-            const exports = JSON.parse(localStorage.getItem('maniverdi_exports') || '[]');
+        async function loadExports() {
+            const exports = await window.cloudStorage.loadData('exports');
             const tableBody = document.getElementById('exportsTable');
             const t = translations[currentLanguage];
             
@@ -2374,8 +2379,8 @@
             });
         }
         
-        function loadNotes() {
-            const notes = JSON.parse(localStorage.getItem('maniverdi_notes') || '[]');
+        async function loadNotes() {
+            const notes = await window.cloudStorage.loadData('notes');
             const tableBody = document.getElementById('notesTable');
             const t = translations[currentLanguage];
             
@@ -2422,8 +2427,8 @@
             });
         }
         
-        function loadEmployees() {
-            const employees = JSON.parse(localStorage.getItem('maniverdi_employees') || '[]');
+        async function loadEmployees() {
+            const employees = await window.cloudStorage.loadData('employees');
             const tableBody = document.getElementById('employeesTable');
             const t = translations[currentLanguage];
             
@@ -2574,7 +2579,7 @@
         }
 
         // Handle form submission
-        document.getElementById('addItemForm').addEventListener('submit', function(e) {
+        document.getElementById('addItemForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const t = translations[currentLanguage];
@@ -2589,11 +2594,11 @@
                 createdDateTime: document.getElementById('date').value
             };
             
-            // Save to localStorage
-            const key = `maniverdi_${currentFormType}s`;
-            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            // Save using cloud storage
+            const key = currentFormType + 's';
+            const items = await window.cloudStorage.loadData(key);
             items.push(data);
-            localStorage.setItem(key, JSON.stringify(items));
+            await window.cloudStorage.saveData(key, items);
             
             // Close modal
             closeAddModal();
@@ -2614,7 +2619,7 @@
             }
         }
 
-        function showOldAddForm(type) {
+        async function showOldAddForm(type) {
             const t = translations[currentLanguage];
             const name = prompt(`${getFieldPrompt(type, t)}:`);
             if (!name) return;
@@ -2643,11 +2648,11 @@
                 data.role = prompt(t.enterRole) || 'user';
             }
             
-            // Save to localStorage
-            const key = `maniverdi_${type}s`;
-            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            // Save using cloud storage
+            const key = type + 's';
+            const items = await window.cloudStorage.loadData(key);
             items.push(data);
-            localStorage.setItem(key, JSON.stringify(items));
+            await window.cloudStorage.saveData(key, items);
             
             // Reload data
             loadSectionData(type + 's');
@@ -2678,14 +2683,14 @@
             showNotification(t.editInfo, 'info');
         }
         
-        function deleteItem(type, id) {
+        async function deleteItem(type, id) {
             const t = translations[currentLanguage];
             if (!confirm(t.confirmDelete)) return;
             
-            const key = `maniverdi_${type}s`;
-            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            const key = type + 's';
+            const items = await window.cloudStorage.loadData(key);
             const filtered = items.filter(item => (item._id || item.id) != id);
-            localStorage.setItem(key, JSON.stringify(filtered));
+            await window.cloudStorage.saveData(key, filtered);
             
             // Reload data
             loadSectionData(type + 's');
@@ -2901,7 +2906,7 @@
             initLanguage();
             updateStorageStatus(); // Add storage status update
             if (checkAuth()) {
-                loadDashboardData();
+                loadDashboardData(); // This is now the async version
                 const t = translations[currentLanguage];
                 const translatedUserName = getTranslatedUserName(currentUser);
                 showNotification(`${t.welcome} ${translatedUserName}! ${t.loginSuccess}`, 'success');
