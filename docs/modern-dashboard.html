@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة مناي ڤيردي</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        :root {
+            /* Light Theme */
+            --primary-color: #6366f1;
+            --secondary-color: #f59e0b;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-overlay: rgba(255, 255, 255, 0.95);
+            
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --text-inverse: #ffffff;
+            
+            --border-color: #e2e8f0;
+            --border-light: #f1f5f9;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #6366f1 100%);
+            --gradient-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-card: #1e293b;
+            --bg-overlay: rgba(30, 41, 59, 0.95);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-inverse: #1e293b;
+            
+            --border-color: #334155;
+            --border-light: #475569;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+        }
+        
+        /* RTL/LTR Support */
+        [dir="rtl"] {
+            font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        [dir="ltr"] {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        [dir="rtl"] .data-table th,
+        [dir="rtl"] .data-table td {
+            text-align: right;
+        }
+        
+        [dir="ltr"] .data-table th,
+        [dir="ltr"] .data-table td {
+            text-align: left;
+        }
+        
+        /* Language-specific adjustments */
+        [lang="ar"] .stat-number {
+            font-family: 'Inter', monospace;
+        }
+        
+        [lang="en"] .logo-text,
+        [lang="it"] .logo-text {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+        
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .logo-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .logo-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            padding: 6px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+        
+        .nav-item:hover::before {
+            opacity: 0.1;
+        }
+        
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        
+        .nav-item.active .nav-icon {
+            animation: bounce 0.6s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            80% { transform: translateY(-5px); }
+        }
+        
+        .nav-icon {
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2);
+        }
+        
+        /* User Section */
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: rotate(180deg);
+        }
+        
+        .language-toggle {
+            position: relative;
+        }
+        
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 100px;
+            justify-content: center;
+        }
+        
+        .lang-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .lang-btn i {
+            font-size: 16px;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .lang-btn:hover i {
+            animation-duration: 0.5s;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        
+        .logout-btn {
+            padding: 10px 16px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Dashboard Section */
+        .dashboard-section {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 2rem;
+        }
+        
+        .section-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: var(--shadow-md);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .stat-card:hover::before {
+            height: 8px;
+        }
+        
+        .stat-card:nth-child(1)::before { background: var(--gradient-primary); }
+        .stat-card:nth-child(2)::before { background: var(--gradient-secondary); }
+        .stat-card:nth-child(3)::before { background: var(--gradient-accent); }
+        .stat-card:nth-child(4)::before { background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .stat-card:nth-child(1) .stat-icon { background: var(--gradient-primary); }
+        .stat-card:nth-child(2) .stat-icon { background: var(--gradient-secondary); }
+        .stat-card:nth-child(3) .stat-icon { background: var(--gradient-accent); }
+        .stat-card:nth-child(4) .stat-icon { background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); }
+        
+        .stat-card:hover .stat-icon {
+            transform: rotate(360deg) scale(1.1);
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-description {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        /* Add Button */
+        .add-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .add-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Table */
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table thead {
+            background: var(--bg-tertiary);
+        }
+        
+        .data-table th {
+            padding: 16px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .data-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .data-table tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .edit-btn {
+            background: var(--info-color);
+            color: white;
+        }
+        
+        .edit-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .delete-btn {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-inactive {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        
+        .priority-high {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        
+        .priority-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .priority-low {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .role-admin {
+            background: #ede9fe;
+            color: #6b21a8;
+        }
+        
+        .role-superuser {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .role-user {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        /* Dark mode status badges */
+        [data-theme="dark"] .status-active {
+            background: #166534;
+            color: #dcfce7;
+        }
+        
+        [data-theme="dark"] .status-inactive {
+            background: #991b1b;
+            color: #fef2f2;
+        }
+        
+        [data-theme="dark"] .priority-high {
+            background: #991b1b;
+            color: #fef2f2;
+        }
+        
+        [data-theme="dark"] .priority-medium {
+            background: #92400e;
+            color: #fef3c7;
+        }
+        
+        [data-theme="dark"] .priority-low {
+            background: #166534;
+            color: #dcfce7;
+        }
+        
+        [data-theme="dark"] .role-admin {
+            background: #6b21a8;
+            color: #ede9fe;
+        }
+        
+        [data-theme="dark"] .role-superuser {
+            background: #1e40af;
+            color: #dbeafe;
+        }
+        
+        [data-theme="dark"] .role-user {
+            background: #166534;
+            color: #dcfce7;
+        }
+        
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .nav {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .header-container {
+                flex-wrap: wrap;
+                gap: 1rem;
+                padding: 1rem;
+                height: auto;
+                min-height: 80px;
+            }
+            
+            .main-content {
+                margin-top: 120px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .stat-number {
+                font-size: 36px;
+            }
+            
+            .nav {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            
+            .nav-item {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-container {
+                padding: 0.5rem;
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
+            
+            .user-section {
+                gap: 8px;
+            }
+            
+            .nav-item span {
+                display: none;
+            }
+            
+            .main-content {
+                margin-top: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div>
+                    <div class="logo-text" id="logo-text">مناي ڤيردي</div>
+                    <div class="logo-subtitle" id="logo-subtitle">نظام الإدارة المتطور</div>
+                </div>
+            </div>
+            
+            <nav class="nav">
+                <div class="nav-item active" onclick="showSection('dashboard', this)">
+                    <i class="fas fa-chart-pie nav-icon"></i>
+                    <span id="nav-dashboard">لوحة التحكم</span>
+                </div>
+                <div class="nav-item" onclick="showSection('imports', this)">
+                    <i class="fas fa-download nav-icon"></i>
+                    <span id="nav-imports">المستوردات</span>
+                </div>
+                <div class="nav-item" onclick="showSection('exports', this)">
+                    <i class="fas fa-upload nav-icon"></i>
+                    <span id="nav-exports">المصدرات</span>
+                </div>
+                <div class="nav-item" onclick="showSection('notes', this)">
+                    <i class="fas fa-sticky-note nav-icon"></i>
+                    <span id="nav-notes">الملاحظات</span>
+                </div>
+                <div class="nav-item" onclick="showSection('employees', this)">
+                    <i class="fas fa-users nav-icon"></i>
+                    <span id="nav-employees">الموظفين</span>
+                </div>
+                <div class="nav-item hidden" id="usersNav" onclick="showSection('users', this)">
+                    <i class="fas fa-user-cog nav-icon"></i>
+                    <span id="nav-users">المستخدمين</span>
+                </div>
+            </nav>
+            
+            <div class="user-section">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                
+                <div class="language-toggle">
+                    <button class="lang-btn" onclick="toggleLanguage()">
+                        <i class="fas fa-globe"></i>
+                        <span id="currentLang">عربي</span>
+                    </button>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">M</div>
+                    <div class="user-name" id="userName">المستخدم</div>
+                </div>
+                
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="dashboard-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <div>
+                    <h1 class="section-title" id="dashboard-title">لوحة التحكم الرئيسية</h1>
+                    <div class="section-subtitle" id="dashboard-subtitle">نظرة شاملة على أداء النظام</div>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="importsCount">0</div>
+                    <div class="stat-label">المستوردات</div>
+                    <div class="stat-description" id="imports-desc">إجمالي العناصر المستوردة هذا الشهر</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="exportsCount">0</div>
+                    <div class="stat-label">المصدرات</div>
+                    <div class="stat-description" id="exports-desc">إجمالي العناصر المصدرة هذا الشهر</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="notesCount">0</div>
+                    <div class="stat-label">الملاحظات</div>
+                    <div class="stat-description" id="notes-desc">إجمالي الملاحظات والتذكيرات النشطة</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="stat-number" id="employeesCount">0</div>
+                    <div class="stat-label">الموظفين</div>
+                    <div class="stat-description" id="employees-desc">إجمالي الموظفين النشطين في النظام</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Imports Section -->
+        <section id="imports" class="content-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div>
+                    <h1 class="section-title" id="imports-title">إدارة المستوردات</h1>
+                    <div class="section-subtitle" id="imports-subtitle">تتبع وإدارة جميع العمليات الاستيرادية</div>
+                </div>
+            </div>
+            
+            <button class="add-btn" onclick="showAddForm('import')">
+                <i class="fas fa-plus"></i>
+                <span id="add-import-btn">إضافة مستورد جديد</span>
+            </button>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr id="imports-table-header">
+                            <th><i class="fas fa-box"></i> اسم المنتج</th>
+                            <th><i class="fas fa-dollar-sign"></i> السعر</th>
+                            <th><i class="fas fa-comment"></i> الملاحظات</th>
+                            <th><i class="fas fa-calendar"></i> التاريخ</th>
+                            <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="importsTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Exports Section -->
+        <section id="exports" class="content-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-upload"></i>
+                </div>
+                <div>
+                    <h1 class="section-title" id="exports-title">إدارة المصدرات</h1>
+                    <div class="section-subtitle" id="exports-subtitle">تتبع وإدارة جميع العمليات التصديرية</div>
+                </div>
+            </div>
+            
+            <button class="add-btn" onclick="showAddForm('export')">
+                <i class="fas fa-plus"></i>
+                <span id="add-export-btn">إضافة مصدر جديد</span>
+            </button>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr id="exports-table-header">
+                            <th><i class="fas fa-box"></i> اسم المنتج</th>
+                            <th><i class="fas fa-dollar-sign"></i> السعر</th>
+                            <th><i class="fas fa-comment"></i> الملاحظات</th>
+                            <th><i class="fas fa-calendar"></i> التاريخ</th>
+                            <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="exportsTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Notes Section -->
+        <section id="notes" class="content-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-sticky-note"></i>
+                </div>
+                <div>
+                    <h1 class="section-title" id="notes-title">إدارة الملاحظات</h1>
+                    <div class="section-subtitle" id="notes-subtitle">تنظيم وإدارة جميع الملاحظات والتذكيرات</div>
+                </div>
+            </div>
+            
+            <button class="add-btn" onclick="showAddForm('note')">
+                <i class="fas fa-plus"></i>
+                <span id="add-note-btn">إضافة ملاحظة جديدة</span>
+            </button>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr id="notes-table-header">
+                            <th><i class="fas fa-heading"></i> العنوان</th>
+                            <th><i class="fas fa-align-left"></i> المحتوى</th>
+                            <th><i class="fas fa-tag"></i> الفئة</th>
+                            <th><i class="fas fa-exclamation-triangle"></i> الأولوية</th>
+                            <th><i class="fas fa-calendar"></i> التاريخ</th>
+                            <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="notesTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Employees Section -->
+        <section id="employees" class="content-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <h1 class="section-title" id="employees-title">إدارة الموظفين</h1>
+                    <div class="section-subtitle" id="employees-subtitle">تتبع وإدارة معلومات جميع الموظفين</div>
+                </div>
+            </div>
+            
+            <button class="add-btn" onclick="showAddForm('employee')">
+                <i class="fas fa-user-plus"></i>
+                <span id="add-employee-btn">إضافة موظف جديد</span>
+            </button>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr id="employees-table-header">
+                            <th><i class="fas fa-user"></i> الاسم</th>
+                            <th><i class="fas fa-briefcase"></i> المسمى الوظيفي</th>
+                            <th><i class="fas fa-money-bill"></i> الراتب الشهري</th>
+                            <th><i class="fas fa-calendar-plus"></i> تاريخ البدء</th>
+                            <th><i class="fas fa-toggle-on"></i> الحالة</th>
+                            <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeesTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users" class="content-section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div>
+                    <h1 class="section-title" id="users-title">إدارة المستخدمين</h1>
+                    <div class="section-subtitle" id="users-subtitle">إدارة صلاحيات وحسابات المستخدمين</div>
+                </div>
+            </div>
+            
+            <button class="add-btn" onclick="showAddForm('user')">
+                <i class="fas fa-user-plus"></i>
+                <span id="add-user-btn">إضافة مستخدم جديد</span>
+            </button>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr id="users-table-header">
+                            <th><i class="fas fa-user"></i> اسم المستخدم</th>
+                            <th><i class="fas fa-shield-alt"></i> الدور</th>
+                            <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="./init-data.js"></script>
+    <script>
+        let currentUser = null;
+        let currentLanguage = 'ar';
+        
+        // Translations
+        const translations = {
+            ar: {
+                // Header
+                systemTitle: 'مناي ڤيردي',
+                systemSubtitle: 'نظام الإدارة المتطور',
+                
+                // Navigation
+                dashboard: 'لوحة التحكم',
+                imports: 'المستوردات',
+                exports: 'المصدرات',
+                notes: 'الملاحظات',
+                employees: 'الموظفين',
+                users: 'المستخدمين',
+                
+                // User section
+                user: 'المستخدم',
+                logout: 'تسجيل الخروج',
+                langName: 'عربي',
+                
+                // Dashboard
+                dashboardTitle: 'لوحة التحكم الرئيسية',
+                dashboardSubtitle: 'نظرة شاملة على أداء النظام',
+                importsLabel: 'المستوردات',
+                exportsLabel: 'المصدرات',
+                notesLabel: 'الملاحظات',
+                employeesLabel: 'الموظفين',
+                
+                // Sections
+                importsTitle: 'إدارة المستوردات',
+                importsSubtitle: 'تتبع وإدارة جميع العمليات الاستيرادية',
+                exportsTitle: 'إدارة المصدرات',
+                exportsSubtitle: 'تتبع وإدارة جميع العمليات التصديرية',
+                notesTitle: 'إدارة الملاحظات',
+                notesSubtitle: 'تنظيم وإدارة جميع الملاحظات والتذكيرات',
+                employeesTitle: 'إدارة الموظفين',
+                employeesSubtitle: 'تتبع وإدارة معلومات جميع الموظفين',
+                usersTitle: 'إدارة المستخدمين',
+                usersSubtitle: 'إدارة صلاحيات وحسابات المستخدمين',
+                
+                // Actions
+                add: 'إضافة',
+                edit: 'تعديل',
+                delete: 'حذف',
+                addNew: 'إضافة جديد',
+                
+                // Table headers
+                productName: 'اسم المنتج',
+                price: 'السعر',
+                notes: 'الملاحظات',
+                date: 'التاريخ',
+                actions: 'الإجراءات',
+                title: 'العنوان',
+                content: 'المحتوى',
+                category: 'الفئة',
+                priority: 'الأولوية',
+                name: 'الاسم',
+                jobTitle: 'المسمى الوظيفي',
+                salary: 'الراتب الشهري',
+                startDate: 'تاريخ البدء',
+                status: 'الحالة',
+                username: 'اسم المستخدم',
+                role: 'الدور',
+                
+                // Buttons and Actions
+                addImport: 'إضافة مستورد جديد',
+                addExport: 'إضافة مصدر جديد',
+                addNote: 'إضافة ملاحظة جديدة',
+                addEmployee: 'إضافة موظف جديد',
+                addUser: 'إضافة مستخدم جديد',
+                
+                // Form inputs
+                enterProductName: 'أدخل اسم المنتج:',
+                enterPrice: 'أدخل السعر:',
+                enterNotes: 'أدخل الملاحظات:',
+                enterTitle: 'أدخل عنوان الملاحظة:',
+                enterContent: 'أدخل المحتوى:',
+                enterCategory: 'أدخل الفئة:',
+                enterPriority: 'أدخل الأولوية (عالي/متوسط/منخفض):',
+                enterEmployeeName: 'أدخل اسم الموظف:',
+                enterJobTitle: 'أدخل المسمى الوظيفي:',
+                enterSalary: 'أدخل الراتب الشهري:',
+                enterUsername: 'أدخل اسم المستخدم:',
+                enterPassword: 'أدخل كلمة المرور:',
+                enterRole: 'أدخل الدور (admin/superuser/user):',
+                isEmployeeActive: 'هل الموظف نشط؟',
+                
+                // Status texts
+                active: 'نشط',
+                inactive: 'غير نشط',
+                high: 'عالي',
+                medium: 'متوسط',
+                low: 'منخفض',
+                
+                // Currency
+                currency: 'د.ع',
+                
+                // Stat descriptions
+                importsDesc: 'إجمالي العناصر المستوردة هذا الشهر',
+                exportsDesc: 'إجمالي العناصر المصدرة هذا الشهر',
+                notesDesc: 'إجمالي الملاحظات والتذكيرات النشطة',
+                employeesDesc: 'إجمالي الموظفين النشطين في النظام',
+                
+                // Messages
+                welcome: 'مرحباً',
+                loginSuccess: 'تم تسجيل الدخول بنجاح',
+                addSuccess: 'تم إضافة العنصر بنجاح!',
+                deleteSuccess: 'تم حذف العنصر بنجاح!',
+                editInfo: 'ميزة التعديل ستكون متاحة قريباً في التحديث القادم',
+                confirmDelete: 'هل أنت متأكد من الحذف؟',
+                confirmLogout: 'هل أنت متأكد من تسجيل الخروج؟'
+            },
+            en: {
+                // Header
+                systemTitle: 'Mani Verdi',
+                systemSubtitle: 'Advanced Management System',
+                
+                // Navigation
+                dashboard: 'Dashboard',
+                imports: 'Imports',
+                exports: 'Exports',
+                notes: 'Notes',
+                employees: 'Employees',
+                users: 'Users',
+                
+                // User section
+                user: 'User',
+                logout: 'Logout',
+                langName: 'English',
+                
+                // Dashboard
+                dashboardTitle: 'Main Dashboard',
+                dashboardSubtitle: 'Comprehensive view of system performance',
+                importsLabel: 'Imports',
+                exportsLabel: 'Exports',
+                notesLabel: 'Notes',
+                employeesLabel: 'Employees',
+                
+                // Sections
+                importsTitle: 'Import Management',
+                importsSubtitle: 'Track and manage all import operations',
+                exportsTitle: 'Export Management',
+                exportsSubtitle: 'Track and manage all export operations',
+                notesTitle: 'Notes Management',
+                notesSubtitle: 'Organize and manage all notes and reminders',
+                employeesTitle: 'Employee Management',
+                employeesSubtitle: 'Track and manage all employee information',
+                usersTitle: 'User Management',
+                usersSubtitle: 'Manage user permissions and accounts',
+                
+                // Actions
+                add: 'Add',
+                edit: 'Edit',
+                delete: 'Delete',
+                addNew: 'Add New',
+                
+                // Table headers
+                productName: 'Product Name',
+                price: 'Price',
+                notes: 'Notes',
+                date: 'Date',
+                actions: 'Actions',
+                title: 'Title',
+                content: 'Content',
+                category: 'Category',
+                priority: 'Priority',
+                name: 'Name',
+                jobTitle: 'Job Title',
+                salary: 'Monthly Salary',
+                startDate: 'Start Date',
+                status: 'Status',
+                username: 'Username',
+                role: 'Role',
+                
+                // Buttons and Actions
+                addImport: 'Add New Import',
+                addExport: 'Add New Export',
+                addNote: 'Add New Note',
+                addEmployee: 'Add New Employee',
+                addUser: 'Add New User',
+                
+                // Form inputs
+                enterProductName: 'Enter product name:',
+                enterPrice: 'Enter price:',
+                enterNotes: 'Enter notes:',
+                enterTitle: 'Enter note title:',
+                enterContent: 'Enter content:',
+                enterCategory: 'Enter category:',
+                enterPriority: 'Enter priority (high/medium/low):',
+                enterEmployeeName: 'Enter employee name:',
+                enterJobTitle: 'Enter job title:',
+                enterSalary: 'Enter monthly salary:',
+                enterUsername: 'Enter username:',
+                enterPassword: 'Enter password:',
+                enterRole: 'Enter role (admin/superuser/user):',
+                isEmployeeActive: 'Is employee active?',
+                
+                // Status texts
+                active: 'Active',
+                inactive: 'Inactive',
+                high: 'High',
+                medium: 'Medium',
+                low: 'Low',
+                
+                // Currency
+                currency: 'IQD',
+                
+                // Stat descriptions
+                importsDesc: 'Total items imported this month',
+                exportsDesc: 'Total items exported this month',
+                notesDesc: 'Total active notes and reminders',
+                employeesDesc: 'Total active employees in the system',
+                
+                // Messages
+                welcome: 'Welcome',
+                loginSuccess: 'Successfully logged in',
+                addSuccess: 'Item added successfully!',
+                deleteSuccess: 'Item deleted successfully!',
+                editInfo: 'Edit feature will be available soon in the next update',
+                confirmDelete: 'Are you sure you want to delete?',
+                confirmLogout: 'Are you sure you want to logout?'
+            },
+            it: {
+                // Header
+                systemTitle: 'Mani Verdi',
+                systemSubtitle: 'Sistema di Gestione Avanzato',
+                
+                // Navigation
+                dashboard: 'Dashboard',
+                imports: 'Importazioni',
+                exports: 'Esportazioni',
+                notes: 'Note',
+                employees: 'Dipendenti',
+                users: 'Utenti',
+                
+                // User section
+                user: 'Utente',
+                logout: 'Disconnetti',
+                langName: 'Italiano',
+                
+                // Dashboard
+                dashboardTitle: 'Dashboard Principale',
+                dashboardSubtitle: 'Vista completa delle prestazioni del sistema',
+                importsLabel: 'Importazioni',
+                exportsLabel: 'Esportazioni',
+                notesLabel: 'Note',
+                employeesLabel: 'Dipendenti',
+                
+                // Sections
+                importsTitle: 'Gestione Importazioni',
+                importsSubtitle: 'Traccia e gestisci tutte le operazioni di importazione',
+                exportsTitle: 'Gestione Esportazioni',
+                exportsSubtitle: 'Traccia e gestisci tutte le operazioni di esportazione',
+                notesTitle: 'Gestione Note',
+                notesSubtitle: 'Organizza e gestisci tutte le note e promemoria',
+                employeesTitle: 'Gestione Dipendenti',
+                employeesSubtitle: 'Traccia e gestisci tutte le informazioni dei dipendenti',
+                usersTitle: 'Gestione Utenti',
+                usersSubtitle: 'Gestisci permessi e account utenti',
+                
+                // Actions
+                add: 'Aggiungi',
+                edit: 'Modifica',
+                delete: 'Elimina',
+                addNew: 'Aggiungi Nuovo',
+                
+                // Table headers
+                productName: 'Nome Prodotto',
+                price: 'Prezzo',
+                notes: 'Note',
+                date: 'Data',
+                actions: 'Azioni',
+                title: 'Titolo',
+                content: 'Contenuto',
+                category: 'Categoria',
+                priority: 'Priorità',
+                name: 'Nome',
+                jobTitle: 'Titolo Lavoro',
+                salary: 'Stipendio Mensile',
+                startDate: 'Data Inizio',
+                status: 'Stato',
+                username: 'Nome Utente',
+                role: 'Ruolo',
+                
+                // Buttons and Actions
+                addImport: 'Aggiungi Nuova Importazione',
+                addExport: 'Aggiungi Nuova Esportazione',
+                addNote: 'Aggiungi Nuova Nota',
+                addEmployee: 'Aggiungi Nuovo Dipendente',
+                addUser: 'Aggiungi Nuovo Utente',
+                
+                // Form inputs
+                enterProductName: 'Inserisci nome prodotto:',
+                enterPrice: 'Inserisci prezzo:',
+                enterNotes: 'Inserisci note:',
+                enterTitle: 'Inserisci titolo nota:',
+                enterContent: 'Inserisci contenuto:',
+                enterCategory: 'Inserisci categoria:',
+                enterPriority: 'Inserisci priorità (alto/medio/basso):',
+                enterEmployeeName: 'Inserisci nome dipendente:',
+                enterJobTitle: 'Inserisci titolo lavoro:',
+                enterSalary: 'Inserisci stipendio mensile:',
+                enterUsername: 'Inserisci nome utente:',
+                enterPassword: 'Inserisci password:',
+                enterRole: 'Inserisci ruolo (admin/superuser/user):',
+                isEmployeeActive: 'Il dipendente è attivo?',
+                
+                // Status texts
+                active: 'Attivo',
+                inactive: 'Inattivo',
+                high: 'Alto',
+                medium: 'Medio',
+                low: 'Basso',
+                
+                // Currency
+                currency: 'IQD',
+                
+                // Stat descriptions
+                importsDesc: 'Totale articoli importati questo mese',
+                exportsDesc: 'Totale articoli esportati questo mese',
+                notesDesc: 'Totale note e promemoria attivi',
+                employeesDesc: 'Totale dipendenti attivi nel sistema',
+                
+                // Messages
+                welcome: 'Benvenuto',
+                loginSuccess: 'Accesso effettuato con successo',
+                addSuccess: 'Elemento aggiunto con successo!',
+                deleteSuccess: 'Elemento eliminato con successo!',
+                editInfo: 'La funzione di modifica sarà disponibile presto nel prossimo aggiornamento',
+                confirmDelete: 'Sei sicuro di voler eliminare?',
+                confirmLogout: 'Sei sicuro di voler disconnetterti?'
+            }
+        };
+        
+        // Language Management
+        function initLanguage() {
+            const savedLang = localStorage.getItem('language') || 'ar';
+            currentLanguage = savedLang;
+            
+            // Set document direction
+            document.documentElement.setAttribute('lang', savedLang);
+            document.documentElement.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+            
+            updateLanguageUI();
+            translatePage();
+        }
+        
+        function toggleLanguage() {
+            const languages = ['ar', 'en', 'it'];
+            const currentIndex = languages.indexOf(currentLanguage);
+            const nextIndex = (currentIndex + 1) % languages.length;
+            
+            currentLanguage = languages[nextIndex];
+            localStorage.setItem('language', currentLanguage);
+            
+            // Set document direction
+            document.documentElement.setAttribute('lang', currentLanguage);
+            document.documentElement.setAttribute('dir', currentLanguage === 'ar' ? 'rtl' : 'ltr');
+            
+            updateLanguageUI();
+            translatePage();
+            showNotification(`${translations[currentLanguage].langName} ${translations[currentLanguage].loginSuccess}`, 'success');
+        }
+        
+        function updateLanguageUI() {
+            const langNames = { ar: 'عربي', en: 'English', it: 'Italiano' };
+            document.getElementById('currentLang').textContent = langNames[currentLanguage];
+        }
+        
+        function translatePage() {
+            const t = translations[currentLanguage];
+            
+            // Update all translatable elements
+            const translatableElements = {
+                'logo-text': t.systemTitle,
+                'logo-subtitle': t.systemSubtitle,
+                'nav-dashboard': t.dashboard,
+                'nav-imports': t.imports,
+                'nav-exports': t.exports,
+                'nav-notes': t.notes,
+                'nav-employees': t.employees,
+                'nav-users': t.users,
+                'dashboard-title': t.dashboardTitle,
+                'dashboard-subtitle': t.dashboardSubtitle,
+                'imports-title': t.importsTitle,
+                'imports-subtitle': t.importsSubtitle,
+                'exports-title': t.exportsTitle,
+                'exports-subtitle': t.exportsSubtitle,
+                'notes-title': t.notesTitle,
+                'notes-subtitle': t.notesSubtitle,
+                'employees-title': t.employeesTitle,
+                'employees-subtitle': t.employeesSubtitle,
+                'users-title': t.usersTitle,
+                'users-subtitle': t.usersSubtitle,
+                'add-import-btn': t.addImport,
+                'add-export-btn': t.addExport,
+                'add-note-btn': t.addNote,
+                'add-employee-btn': t.addEmployee,
+                'add-user-btn': t.addUser
+            };
+            
+            // Apply translations
+            Object.keys(translatableElements).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = translatableElements[id];
+                }
+            });
+            
+            // Update navigation items
+            updateNavigationText();
+            
+            // Update stat labels and descriptions
+            updateStatLabelsAndDescriptions();
+            
+            // Reload current section data to update table headers
+            const activeSection = document.querySelector('.nav-item.active');
+            if (activeSection) {
+                const sectionName = activeSection.onclick.toString().match(/'(\w+)'/)[1];
+                loadSectionData(sectionName);
+            }
+        }
+        
+        function updateStatLabelsAndDescriptions() {
+            const t = translations[currentLanguage];
+            
+            // Update stat labels
+            const statLabels = document.querySelectorAll('.stat-label');
+            const statTexts = [t.importsLabel, t.exportsLabel, t.notesLabel, t.employeesLabel];
+            
+            statLabels.forEach((label, index) => {
+                if (statTexts[index]) {
+                    label.textContent = statTexts[index];
+                }
+            });
+            
+            // Update stat descriptions with IDs
+            const statDescIds = ['imports-desc', 'exports-desc', 'notes-desc', 'employees-desc'];
+            const statDescs = [t.importsDesc, t.exportsDesc, t.notesDesc, t.employeesDesc];
+            
+            statDescIds.forEach((id, index) => {
+                const element = document.getElementById(id);
+                if (element && statDescs[index]) {
+                    element.textContent = statDescs[index];
+                }
+            });
+        }
+        
+        function updateNavigationText() {
+            const t = translations[currentLanguage];
+            const navItems = document.querySelectorAll('.nav-item span');
+            const navTexts = [t.dashboard, t.imports, t.exports, t.notes, t.employees, t.users];
+            
+            navItems.forEach((item, index) => {
+                if (navTexts[index]) {
+                    item.textContent = navTexts[index];
+                }
+            });
+        }
+        
+        function updateStatLabels() {
+            const t = translations[currentLanguage];
+            const statLabels = document.querySelectorAll('.stat-label');
+            const statTexts = [t.importsLabel, t.exportsLabel, t.notesLabel, t.employeesLabel];
+            
+            statLabels.forEach((label, index) => {
+                if (statTexts[index]) {
+                    label.textContent = statTexts[index];
+                }
+            });
+        }
+        
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+        
+        function updateThemeIcon(theme) {
+            const themeIcon = document.getElementById('themeIcon');
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+        
+        // Authentication
+        function checkAuth() {
+            const userData = localStorage.getItem('currentUser');
+            if (!userData) {
+                window.location.href = './login.html';
+                return false;
+            }
+            
+            currentUser = JSON.parse(userData);
+            document.getElementById('userName').textContent = currentUser.name || currentUser.username;
+            document.getElementById('userAvatar').textContent = (currentUser.name || currentUser.username).charAt(0).toUpperCase();
+            
+            // Show users section for superuser only
+            if (currentUser.role === 'superuser') {
+                document.getElementById('usersNav').classList.remove('hidden');
+            }
+            
+            return true;
+        }
+        
+        // Navigation
+        function showSection(sectionName, element) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section, .content-section').forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            const section = document.getElementById(sectionName);
+            if (sectionName === 'dashboard') {
+                section.style.display = 'block';
+            } else {
+                section.classList.add('active');
+                section.style.display = 'block';
+            }
+            
+            // Add active class to clicked nav item
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // Load section data
+            loadSectionData(sectionName);
+        }
+        
+        // Data Loading
+        function loadSectionData(sectionName) {
+            switch(sectionName) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'imports':
+                    loadImports();
+                    break;
+                case 'exports':
+                    loadExports();
+                    break;
+                case 'notes':
+                    loadNotes();
+                    break;
+                case 'employees':
+                    loadEmployees();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+            }
+        }
+        
+        function loadDashboardData() {
+            const imports = JSON.parse(localStorage.getItem('maniverdi_imports') || '[]');
+            const exports = JSON.parse(localStorage.getItem('maniverdi_exports') || '[]');
+            const notes = JSON.parse(localStorage.getItem('maniverdi_notes') || '[]');
+            const employees = JSON.parse(localStorage.getItem('maniverdi_employees') || '[]');
+            
+            // Animate counters
+            animateCounter('importsCount', imports.length);
+            animateCounter('exportsCount', exports.length);
+            animateCounter('notesCount', notes.length);
+            animateCounter('employeesCount', employees.length);
+        }
+        
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            let currentValue = 0;
+            const increment = Math.ceil(targetValue / 30);
+            const duration = 1000; // 1 second
+            const stepTime = duration / 30;
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= targetValue) {
+                    currentValue = targetValue;
+                    clearInterval(timer);
+                }
+                element.textContent = currentValue;
+            }, stepTime);
+        }
+        
+        function loadImports() {
+            const imports = JSON.parse(localStorage.getItem('maniverdi_imports') || '[]');
+            const tableBody = document.getElementById('importsTable');
+            const t = translations[currentLanguage];
+            
+            // Update table headers
+            const table = tableBody.closest('table');
+            const headers = table.querySelectorAll('th');
+            if (headers.length >= 5) {
+                headers[0].innerHTML = `<i class="fas fa-box"></i> ${t.productName}`;
+                headers[1].innerHTML = `<i class="fas fa-dollar-sign"></i> ${t.price}`;
+                headers[2].innerHTML = `<i class="fas fa-comment"></i> ${t.notes}`;
+                headers[3].innerHTML = `<i class="fas fa-calendar"></i> ${t.date}`;
+                headers[4].innerHTML = `<i class="fas fa-cogs"></i> ${t.actions}`;
+            }
+            
+            tableBody.innerHTML = '';
+            
+            imports.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><i class="fas fa-box" style="margin-left: 8px; color: var(--primary-color);"></i>${item.productName}</td>
+                    <td><strong>${item.price.toLocaleString()}</strong> ${t.currency}</td>
+                    <td>${item.notes}</td>
+                    <td><i class="fas fa-calendar" style="margin-left: 8px; color: var(--text-muted);"></i>${item.createdAt}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit-btn" onclick="editItem('import', '${item._id}')">
+                                <i class="fas fa-edit"></i> ${t.edit}
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteItem('import', '${item._id}')">
+                                <i class="fas fa-trash"></i> ${t.delete}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function loadExports() {
+            const exports = JSON.parse(localStorage.getItem('maniverdi_exports') || '[]');
+            const tableBody = document.getElementById('exportsTable');
+            const t = translations[currentLanguage];
+            
+            // Update table headers
+            const table = tableBody.closest('table');
+            const headers = table.querySelectorAll('th');
+            if (headers.length >= 5) {
+                headers[0].innerHTML = `<i class="fas fa-box"></i> ${t.productName}`;
+                headers[1].innerHTML = `<i class="fas fa-dollar-sign"></i> ${t.price}`;
+                headers[2].innerHTML = `<i class="fas fa-comment"></i> ${t.notes}`;
+                headers[3].innerHTML = `<i class="fas fa-calendar"></i> ${t.date}`;
+                headers[4].innerHTML = `<i class="fas fa-cogs"></i> ${t.actions}`;
+            }
+            
+            tableBody.innerHTML = '';
+            
+            exports.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><i class="fas fa-box" style="margin-left: 8px; color: var(--primary-color);"></i>${item.productName}</td>
+                    <td><strong>${item.price.toLocaleString()}</strong> ${t.currency}</td>
+                    <td>${item.notes}</td>
+                    <td><i class="fas fa-calendar" style="margin-left: 8px; color: var(--text-muted);"></i>${item.createdAt}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit-btn" onclick="editItem('export', '${item._id}')">
+                                <i class="fas fa-edit"></i> ${t.edit}
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteItem('export', '${item._id}')">
+                                <i class="fas fa-trash"></i> ${t.delete}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function loadNotes() {
+            const notes = JSON.parse(localStorage.getItem('maniverdi_notes') || '[]');
+            const tableBody = document.getElementById('notesTable');
+            const t = translations[currentLanguage];
+            
+            // Update table headers
+            const table = tableBody.closest('table');
+            const headers = table.querySelectorAll('th');
+            if (headers.length >= 6) {
+                headers[0].innerHTML = `<i class="fas fa-heading"></i> ${t.title}`;
+                headers[1].innerHTML = `<i class="fas fa-align-left"></i> ${t.content}`;
+                headers[2].innerHTML = `<i class="fas fa-tag"></i> ${t.category}`;
+                headers[3].innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${t.priority}`;
+                headers[4].innerHTML = `<i class="fas fa-calendar"></i> ${t.date}`;
+                headers[5].innerHTML = `<i class="fas fa-cogs"></i> ${t.actions}`;
+            }
+            
+            tableBody.innerHTML = '';
+            
+            notes.forEach(item => {
+                const priorityClass = item.priority === t.high || item.priority === 'عالي' ? 'high' : 
+                                   item.priority === t.medium || item.priority === 'متوسط' ? 'medium' : 'low';
+                const priorityText = item.priority === 'عالي' ? t.high : 
+                                   item.priority === 'متوسط' ? t.medium : 
+                                   item.priority === 'منخفض' ? t.low : item.priority;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><i class="fas fa-sticky-note" style="margin-left: 8px; color: var(--secondary-color);"></i>${item.title}</td>
+                    <td>${item.content.substring(0, 50)}${item.content.length > 50 ? '...' : ''}</td>
+                    <td><span class="status-badge">${item.category}</span></td>
+                    <td><span class="status-badge priority-${priorityClass}">${priorityText}</span></td>
+                    <td><i class="fas fa-calendar" style="margin-left: 8px; color: var(--text-muted);"></i>${item.createdDate}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit-btn" onclick="editItem('note', '${item._id}')">
+                                <i class="fas fa-edit"></i> ${t.edit}
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteItem('note', '${item._id}')">
+                                <i class="fas fa-trash"></i> ${t.delete}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function loadEmployees() {
+            const employees = JSON.parse(localStorage.getItem('maniverdi_employees') || '[]');
+            const tableBody = document.getElementById('employeesTable');
+            const t = translations[currentLanguage];
+            
+            // Update table headers
+            const table = tableBody.closest('table');
+            const headers = table.querySelectorAll('th');
+            if (headers.length >= 6) {
+                headers[0].innerHTML = `<i class="fas fa-user"></i> ${t.name}`;
+                headers[1].innerHTML = `<i class="fas fa-briefcase"></i> ${t.jobTitle}`;
+                headers[2].innerHTML = `<i class="fas fa-money-bill"></i> ${t.salary}`;
+                headers[3].innerHTML = `<i class="fas fa-calendar-plus"></i> ${t.startDate}`;
+                headers[4].innerHTML = `<i class="fas fa-toggle-on"></i> ${t.status}`;
+                headers[5].innerHTML = `<i class="fas fa-cogs"></i> ${t.actions}`;
+            }
+            
+            tableBody.innerHTML = '';
+            
+            employees.forEach(item => {
+                const statusText = item.active ? t.active : t.inactive;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><i class="fas fa-user" style="margin-left: 8px; color: var(--accent-color);"></i>${item.name}</td>
+                    <td><i class="fas fa-briefcase" style="margin-left: 8px; color: var(--text-muted);"></i>${item.jobTitle}</td>
+                    <td><strong>${item.monthlySalary.toLocaleString()}</strong> ${t.currency}</td>
+                    <td><i class="fas fa-calendar-plus" style="margin-left: 8px; color: var(--text-muted);"></i>${item.startDate}</td>
+                    <td><span class="status-badge status-${item.active ? 'active' : 'inactive'}">${statusText}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit-btn" onclick="editItem('employee', '${item._id}')">
+                                <i class="fas fa-edit"></i> ${t.edit}
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteItem('employee', '${item._id}')">
+                                <i class="fas fa-trash"></i> ${t.delete}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function loadUsers() {
+            if (currentUser.role !== 'superuser') return;
+            
+            const users = JSON.parse(localStorage.getItem('maniverdi_users') || '[]');
+            const tableBody = document.getElementById('usersTable');
+            const t = translations[currentLanguage];
+            
+            // Update table headers
+            const table = tableBody.closest('table');
+            const headers = table.querySelectorAll('th');
+            if (headers.length >= 3) {
+                headers[0].innerHTML = `<i class="fas fa-user"></i> ${t.username}`;
+                headers[1].innerHTML = `<i class="fas fa-shield-alt"></i> ${t.role}`;
+                headers[2].innerHTML = `<i class="fas fa-cogs"></i> ${t.actions}`;
+            }
+            
+            tableBody.innerHTML = '';
+            
+            users.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><i class="fas fa-user" style="margin-left: 8px; color: var(--primary-color);"></i>${item.username}</td>
+                    <td><span class="status-badge role-${item.role}">${getRoleText(item.role)}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn edit-btn" onclick="editItem('user', '${item.id}')">
+                                <i class="fas fa-edit"></i> ${t.edit}
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteItem('user', '${item.id}')">
+                                <i class="fas fa-trash"></i> ${t.delete}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function getRoleText(role) {
+            const t = translations[currentLanguage];
+            const roleTranslations = {
+                ar: { admin: 'مدير', superuser: 'مدير عام', user: 'مستخدم' },
+                en: { admin: 'Admin', superuser: 'Super User', user: 'User' },
+                it: { admin: 'Amministratore', superuser: 'Super Utente', user: 'Utente' }
+            };
+            
+            return roleTranslations[currentLanguage][role] || roleTranslations[currentLanguage]['user'];
+        }
+        
+        // CRUD Operations
+        function showAddForm(type) {
+            const t = translations[currentLanguage];
+            const name = prompt(`${getFieldPrompt(type, t)}:`);
+            if (!name) return;
+            
+            const data = { 
+                _id: Date.now().toString(), 
+                createdAt: new Date().toISOString().split('T')[0] 
+            };
+            
+            if (type === 'import' || type === 'export') {
+                data.productName = name;
+                data.price = parseFloat(prompt(t.enterPrice) || 0);
+                data.notes = prompt(t.enterNotes) || '';
+            } else if (type === 'note') {
+                data.title = name;
+                data.content = prompt(t.enterContent) || '';
+                data.category = prompt(t.enterCategory) || 'عام';
+                data.priority = prompt(t.enterPriority) || t.medium;
+                data.createdDate = data.createdAt;
+            } else if (type === 'employee') {
+                data.name = name;
+                data.jobTitle = prompt(t.enterJobTitle) || '';
+                data.monthlySalary = parseFloat(prompt(t.enterSalary) || 0);
+                data.startDate = data.createdAt;
+                data.active = confirm(t.isEmployeeActive);
+            } else if (type === 'user') {
+                data.id = Date.now();
+                data.username = name;
+                data.password = prompt(t.enterPassword) || '';
+                data.role = prompt(t.enterRole) || 'user';
+            }
+            
+            // Save to localStorage
+            const key = `maniverdi_${type}s`;
+            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            items.push(data);
+            localStorage.setItem(key, JSON.stringify(items));
+            
+            // Reload data
+            loadSectionData(type + 's');
+            if (type !== 'user') loadDashboardData();
+            
+            // Show success animation
+            showNotification(t.addSuccess, 'success');
+        }
+        
+        function getFieldPrompt(type, t) {
+            switch(type) {
+                case 'import':
+                case 'export':
+                    return t.enterProductName;
+                case 'note':
+                    return t.enterTitle;
+                case 'employee':
+                    return t.enterEmployeeName;
+                case 'user':
+                    return t.enterUsername;
+                default:
+                    return t.enterProductName;
+            }
+        }
+        
+        function editItem(type, id) {
+            const t = translations[currentLanguage];
+            showNotification(t.editInfo, 'info');
+        }
+        
+        function deleteItem(type, id) {
+            const t = translations[currentLanguage];
+            if (!confirm(t.confirmDelete)) return;
+            
+            const key = `maniverdi_${type}s`;
+            const items = JSON.parse(localStorage.getItem(key) || '[]');
+            const filtered = items.filter(item => (item._id || item.id) != id);
+            localStorage.setItem(key, JSON.stringify(filtered));
+            
+            // Reload data
+            loadSectionData(type + 's');
+            if (type !== 'user') loadDashboardData();
+            
+            showNotification(t.deleteSuccess, 'success');
+        }
+        
+        function getFieldLabel(type, field) {
+            const labels = {
+                import: { name: 'اسم المنتج' },
+                export: { name: 'اسم المنتج' },
+                note: { name: 'عنوان الملاحظة' },
+                employee: { name: 'اسم الموظف' },
+                user: { name: 'اسم المستخدم' }
+            };
+            return labels[type]?.[field] || 'الاسم';
+        }
+        
+        // Notifications
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: var(--bg-card);
+                color: var(--text-primary);
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: var(--shadow-xl);
+                border: 1px solid var(--border-color);
+                z-index: 10000;
+                transform: translateX(400px);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                max-width: 300px;
+            `;
+            
+            if (type === 'success') {
+                notification.style.borderLeft = '4px solid var(--accent-color)';
+            } else if (type === 'error') {
+                notification.style.borderLeft = '4px solid var(--danger-color)';
+            } else {
+                notification.style.borderLeft = '4px solid var(--info-color)';
+            }
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}" style="color: var(--${type === 'success' ? 'accent' : type === 'error' ? 'danger' : 'info'}-color);"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        function logout() {
+            const t = translations[currentLanguage];
+            if (confirm(t.confirmLogout)) {
+                localStorage.removeItem('currentUser');
+                window.location.href = './login.html';
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            initLanguage();
+            if (checkAuth()) {
+                loadDashboardData();
+                const t = translations[currentLanguage];
+                showNotification(`${t.welcome} ${currentUser.name || currentUser.username}! ${t.loginSuccess}`, 'success');
+            }
+        });
+    </script>
+</body>
+</html>
