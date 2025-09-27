@@ -1163,6 +1163,15 @@
 
     <script src="./init-data.js"></script>
     <script>
+        // فحص فوري للمصادقة قبل تحميل أي شيء آخر
+        (function() {
+            const userData = localStorage.getItem('currentUser');
+            if (!userData) {
+                window.location.href = './login.html';
+                return;
+            }
+        })();
+        
         let currentUser = null;
         let currentLanguage = 'ar';
         
@@ -1667,6 +1676,7 @@
         function checkAuth() {
             const userData = localStorage.getItem('currentUser');
             if (!userData) {
+                // إذا لم يكن المستخدم مسجل دخول، توجيه إلى صفحة تسجيل الدخول
                 window.location.href = './login.html';
                 return false;
             }
