@@ -154,7 +154,7 @@ function App() {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <CssBaseline />
           <AuthProvider>
-            <Router>
+            <Router basename={process.env.NODE_ENV === 'production' ? '/maniverdi90' : ''}>
               <div className="App">
                 <Routes>
                   <Route path="/login" element={<Login />} />
