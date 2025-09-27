@@ -1,7 +1,7 @@
 {
   "name": "mani-verdi-management",
   "version": "1.0.0",
-  "description": "Modern multilingual management system for Mani Verdi company",
+  "description": "🌟 Modern multilingual management system for Mani Verdi company with Arabic, English, and Italian support",
   "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
@@ -9,11 +9,38 @@
     "client": "cd client && npm start",
     "build": "cd client && npm run build",
     "start": "cd server && npm start",
-    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "test": "echo \"Tests will be added soon\" && exit 0"
   },
-  "keywords": ["management", "multilingual", "react", "nodejs", "mongodb"],
-  "author": "Mani Verdi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/mani-verdi-management.git"
+  },
+  "keywords": [
+    "management-system",
+    "multilingual",
+    "react", 
+    "nodejs",
+    "arabic",
+    "material-ui",
+    "mani-verdi",
+    "business-management",
+    "inventory-management",
+    "employee-management"
+  ],
+  "author": {
+    "name": "Mani Verdi Team",
+    "email": "contact@maniverdi.com"
+  },
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/your-username/mani-verdi-management/issues"
+  },
+  "homepage": "https://github.com/your-username/mani-verdi-management#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "devDependencies": {
     "concurrently": "^8.2.0"
   }
