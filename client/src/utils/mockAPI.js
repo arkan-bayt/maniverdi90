@@ -1,13 +1,13 @@
 // Mock API for GitHub Pages deployment
 class MockAPI {
   constructor() {
-    this.users = [
-      { id: 1, username: 'admin', password: 'admin', role: 'admin' },
+    // Load data from localStorage or use defaults
+    this.users = this.loadFromStorage('maniverdi_users', [
       { id: 2, username: 'iraq', password: 'iraq', role: 'superuser' },
       { id: 3, username: 'mani', password: 'mani', role: 'user' }
-    ];
+    ]);
 
-    this.imports = [
+    this.imports = this.loadFromStorage('maniverdi_imports', [
       {
         _id: 'imp_1',
         productName: 'القمح المستورد',
@@ -24,9 +24,9 @@ class MockAPI {
         createdAt: '2024-09-10',
         createdTime: '14:15'
       }
-    ];
+    ]);
 
-    this.exports = [
+    this.exports = this.loadFromStorage('maniverdi_exports', [
       {
         _id: 'exp_1',
         productName: 'التمر العراقي',
@@ -43,9 +43,9 @@ class MockAPI {
         createdAt: '2024-09-12',
         createdTime: '16:30'
       }
-    ];
+    ]);
 
-    this.employees = [
+    this.employees = this.loadFromStorage('maniverdi_employees', [
       {
         _id: 'emp_1',
         name: 'أحمد محمد علي',
@@ -64,9 +64,9 @@ class MockAPI {
         startTime: '09:00',
         active: true
       }
-    ];
+    ]);
 
-    this.notes = [
+    this.notes = this.loadFromStorage('maniverdi_notes', [
       {
         _id: 'note_1',
         title: 'اجتماع مع العملاء',
@@ -85,9 +85,28 @@ class MockAPI {
         createdDate: '2024-09-26',
         createdTime: '15:45'
       }
-    ];
+    ]);
 
     this.currentId = 10;
+  }
+
+  // Helper methods for localStorage
+  loadFromStorage(key, defaultValue) {
+    try {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : defaultValue;
+    } catch (error) {
+      console.warn(`Failed to load ${key} from localStorage:`, error);
+      return defaultValue;
+    }
+  }
+
+  saveToStorage(key, data) {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.warn(`Failed to save ${key} to localStorage:`, error);
+    }
   }
 
   // Authentication
@@ -157,6 +176,7 @@ class MockAPI {
           createdTime: data.createdTime || new Date().toTimeString().slice(0, 5)
         };
         this.imports.push(newImport);
+        this.saveToStorage('maniverdi_imports', this.imports);
         resolve({ data: newImport });
       }, 300);
     });
@@ -168,6 +188,7 @@ class MockAPI {
         const index = this.imports.findIndex(item => item._id === id);
         if (index !== -1) {
           this.imports[index] = { ...this.imports[index], ...data, price: Number(data.price) };
+          this.saveToStorage('maniverdi_imports', this.imports);
           resolve({ data: this.imports[index] });
         } else {
           reject({ response: { status: 404, data: { message: 'Import not found' } } });
@@ -182,6 +203,7 @@ class MockAPI {
         const index = this.imports.findIndex(item => item._id === id);
         if (index !== -1) {
           this.imports.splice(index, 1);
+          this.saveToStorage('maniverdi_imports', this.imports);
           resolve({ data: { message: 'Import deleted successfully' } });
         } else {
           reject({ response: { status: 404, data: { message: 'Import not found' } } });
@@ -217,6 +239,7 @@ class MockAPI {
           createdTime: data.createdTime || new Date().toTimeString().slice(0, 5)
         };
         this.exports.push(newExport);
+        this.saveToStorage('maniverdi_exports', this.exports);
         resolve({ data: newExport });
       }, 300);
     });
@@ -228,6 +251,7 @@ class MockAPI {
         const index = this.exports.findIndex(item => item._id === id);
         if (index !== -1) {
           this.exports[index] = { ...this.exports[index], ...data, price: Number(data.price) };
+          this.saveToStorage('maniverdi_exports', this.exports);
           resolve({ data: this.exports[index] });
         } else {
           reject({ response: { status: 404, data: { message: 'Export not found' } } });
@@ -242,6 +266,7 @@ class MockAPI {
         const index = this.exports.findIndex(item => item._id === id);
         if (index !== -1) {
           this.exports.splice(index, 1);
+          this.saveToStorage('maniverdi_exports', this.exports);
           resolve({ data: { message: 'Export deleted successfully' } });
         } else {
           reject({ response: { status: 404, data: { message: 'Export not found' } } });
@@ -278,6 +303,7 @@ class MockAPI {
           startTime: data.startTime || new Date().toTimeString().slice(0, 5)
         };
         this.employees.push(newEmployee);
+        this.saveToStorage('maniverdi_employees', this.employees);
         resolve({ data: newEmployee });
       }, 300);
     });
@@ -293,6 +319,7 @@ class MockAPI {
             ...data, 
             monthlySalary: Number(data.monthlySalary) 
           };
+          this.saveToStorage('maniverdi_employees', this.employees);
           resolve({ data: this.employees[index] });
         } else {
           reject({ response: { status: 404, data: { message: 'Employee not found' } } });
@@ -307,6 +334,7 @@ class MockAPI {
         const index = this.employees.findIndex(emp => emp._id === id);
         if (index !== -1) {
           this.employees.splice(index, 1);
+          this.saveToStorage('maniverdi_employees', this.employees);
           resolve({ data: { message: 'Employee deleted successfully' } });
         } else {
           reject({ response: { status: 404, data: { message: 'Employee not found' } } });
@@ -339,6 +367,7 @@ class MockAPI {
           createdTime: data.createdTime || new Date().toTimeString().slice(0, 5)
         };
         this.notes.push(newNote);
+        this.saveToStorage('maniverdi_notes', this.notes);
         resolve({ data: newNote });
       }, 300);
     });
@@ -350,6 +379,7 @@ class MockAPI {
         const index = this.notes.findIndex(note => note._id === id);
         if (index !== -1) {
           this.notes[index] = { ...this.notes[index], ...data };
+          this.saveToStorage('maniverdi_notes', this.notes);
           resolve({ data: this.notes[index] });
         } else {
           reject({ response: { status: 404, data: { message: 'Note not found' } } });
@@ -364,6 +394,7 @@ class MockAPI {
         const index = this.notes.findIndex(note => note._id === id);
         if (index !== -1) {
           this.notes.splice(index, 1);
+          this.saveToStorage('maniverdi_notes', this.notes);
           resolve({ data: { message: 'Note deleted successfully' } });
         } else {
           reject({ response: { status: 404, data: { message: 'Note not found' } } });
@@ -408,6 +439,7 @@ class MockAPI {
           role: data.role || 'user'
         };
         this.users.push(newUser);
+        this.saveToStorage('maniverdi_users', this.users);
         
         // Return without password
         const userResponse = {
@@ -438,6 +470,7 @@ class MockAPI {
           if (data.username) this.users[index].username = data.username;
           if (data.password) this.users[index].password = data.password;
           if (data.role) this.users[index].role = data.role;
+          this.saveToStorage('maniverdi_users', this.users);
           
           // Return without password
           const userResponse = {
@@ -469,6 +502,7 @@ class MockAPI {
           }
           
           this.users.splice(index, 1);
+          this.saveToStorage('maniverdi_users', this.users);
           resolve({ data: { message: 'User deleted successfully' } });
         } else {
           reject({ response: { status: 404, data: { message: 'User not found' } } });

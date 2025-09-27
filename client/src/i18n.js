@@ -25,7 +25,8 @@ const resources = {
         date: 'التاريخ',
         time: 'الوقت',
         refresh: 'تحديث',
-        all: 'الجميع'
+        all: 'الجميع',
+        loading: 'جاري التحميل...'
       },
 
       // Navigation
@@ -46,7 +47,10 @@ const resources = {
         enterCredentials: 'أدخل بيانات الدخول للمتابعة',
         loginButton: 'تسجيل الدخول',
         loginError: 'خطأ في بيانات الدخول',
-        loginSuccess: 'تم تسجيل الدخول بنجاح'
+        loginSuccess: 'تم تسجيل الدخول بنجاح',
+        invalidCredentials: 'اسم المستخدم أو كلمة المرور غير صحيحة',
+        username: 'اسم المستخدم',
+        password: 'كلمة المرور'
       },
 
       // Dashboard

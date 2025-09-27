@@ -338,16 +338,6 @@ const Login = () => {
                 {loading ? t('common.loading') : t('auth.loginButton')}
               </Button>
             </Box>
-
-            {/* Demo Credentials */}
-            <Box mt={4} p={2} bgcolor="grey.50" borderRadius={2}>
-              <Typography variant="caption" color="text.secondary" display="block" textAlign="center">
-                Demo Credentials:
-              </Typography>
-              <Typography variant="caption" color="text.secondary" display="block" textAlign="center">
-                Admin: admin/admin • Superuser: iraq/iraq • User: mani/mani
-              </Typography>
-            </Box>
           </CardContent>
         </Card>
       </Grow>
