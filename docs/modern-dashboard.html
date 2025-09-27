@@ -16,8 +16,8 @@
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
-    <!-- Firebase Real-time Storage Script -->
-    <script src="firebase-storage.js"></script>
+    <!-- Firebase Real-time Storage Script - Enhanced -->
+    <script src="firebase-realtime.js"></script>
     
     <style>
         :root {
@@ -2801,17 +2801,22 @@
             // Remove all status classes
             statusElement.className = 'storage-status';
             
-            // Always show Firebase shared mode
-            statusElement.classList.add('shared');
-            iconElement.className = 'fas fa-cloud';
-            textElement.textContent = t.sharedStorage;
-            statusElement.title = 'بيانات مشتركة عبر Firebase';
+            // Get connection info from Firebase
+            const connectionInfo = window.firebaseManager?.getConnectionInfo() || {
+                isOnline: navigator.onLine,
+                mode: 'firebase'
+            };
             
-            if (!navigator.onLine) {
-                statusElement.classList.add('error');
-                iconElement.className = 'fas fa-exclamation-triangle';
-                textElement.textContent = t.error;
-                statusElement.title = 'غير متصل بالإنترنت - يعمل محلياً';
+            if (connectionInfo.isOnline) {
+                statusElement.classList.add('shared');
+                iconElement.className = 'fas fa-cloud';
+                textElement.textContent = t.sharedStorage;
+                statusElement.title = 'بيانات مشتركة عبر Firebase - متصل';
+            } else {
+                statusElement.classList.add('local');
+                iconElement.className = 'fas fa-wifi';
+                textElement.textContent = 'محلي';
+                statusElement.title = 'وضع عدم الاتصال - سيتم المزامنة عند العودة للإنترنت';
             }
         }
         
@@ -2910,8 +2915,8 @@
             loadDashboardData();
         });
         
-        // Initialize Firebase Data Manager
-        window.dataManager = new RealTimeDataManager();
+        // Initialize Firebase Data Manager - Enhanced
+        window.dataManager = window.firebaseManager;
         
         // Initialize
         document.addEventListener('DOMContentLoaded', async function() {
@@ -2919,8 +2924,7 @@
             initLanguage();
             updateStorageStatus(); // Add storage status update
             if (checkAuth()) {
-                // Initialize Firebase default data
-                await window.dataManager.initializeDefaultData();
+                // Firebase will auto-initialize default data
                 
                 // Load dashboard data
                 await loadDashboardData();
