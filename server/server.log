@@ -1,0 +1,10 @@
+nohup: ignoring input
+Server running on port 5001
+Available credentials:
+- admin / admin
+- iraq / iraq
+- mani / mani
+Login attempt: { username: 'admin', password: 'admin' }
+Login successful for user: admin
+Login attempt: { username: 'iraq', password: 'iraq' }
+Login successful for user: iraq
