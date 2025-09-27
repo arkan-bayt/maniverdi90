@@ -392,6 +392,92 @@ class MockAPI {
   }
 
   createUser(data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // Check if username already exists
+        const existingUser = this.users.find(u => u.username === data.username);
+        if (existingUser) {
+          reject({ response: { status: 409, data: { message: 'Username already exists' } } });
+          return;
+        }
+        
+        const newUser = {
+          id: this.currentId++,
+          username: data.username,
+          password: data.password,
+          role: data.role || 'user'
+        };
+        this.users.push(newUser);
+        
+        // Return without password
+        const userResponse = {
+          id: newUser.id,
+          username: newUser.username,
+          role: newUser.role
+        };
+        resolve({ data: userResponse });
+      }, 300);
+    });
+  }
+
+  updateUser(id, data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const index = this.users.findIndex(user => user.id == id);
+        if (index !== -1) {
+          // Check if new username conflicts with existing users (except current)
+          if (data.username) {
+            const existingUser = this.users.find(u => u.username === data.username && u.id != id);
+            if (existingUser) {
+              reject({ response: { status: 409, data: { message: 'Username already exists' } } });
+              return;
+            }
+          }
+          
+          // Update user
+          if (data.username) this.users[index].username = data.username;
+          if (data.password) this.users[index].password = data.password;
+          if (data.role) this.users[index].role = data.role;
+          
+          // Return without password
+          const userResponse = {
+            id: this.users[index].id,
+            username: this.users[index].username,
+            role: this.users[index].role
+          };
+          resolve({ data: userResponse });
+        } else {
+          reject({ response: { status: 404, data: { message: 'User not found' } } });
+        }
+      }, 300);
+    });
+  }
+
+  deleteUser(id) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const index = this.users.findIndex(user => user.id == id);
+        if (index !== -1) {
+          // Don't allow deleting the last admin
+          const user = this.users[index];
+          if (user.role === 'admin') {
+            const adminCount = this.users.filter(u => u.role === 'admin').length;
+            if (adminCount <= 1) {
+              reject({ response: { status: 400, data: { message: 'Cannot delete last admin user' } } });
+              return;
+            }
+          }
+          
+          this.users.splice(index, 1);
+          resolve({ data: { message: 'User deleted successfully' } });
+        } else {
+          reject({ response: { status: 404, data: { message: 'User not found' } } });
+        }
+      }, 300);
+    });
+  }
+
+  createUser(data) {
     return new Promise((resolve) => {
       setTimeout(() => {
         const newUser = {

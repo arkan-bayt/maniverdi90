@@ -32,7 +32,9 @@ import {
   Logout,
   Settings,
   Language as LanguageIcon,
-  Notifications
+  Notifications,
+  CheckCircle,
+  Warning
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -45,6 +47,7 @@ const Layout = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileAnchor, setProfileAnchor] = useState(null);
   const [languageAnchor, setLanguageAnchor] = useState(null);
+  const [notificationAnchor, setNotificationAnchor] = useState(null);
   
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -118,6 +121,14 @@ const Layout = ({ children }) => {
 
   const handleLanguageClose = () => {
     setLanguageAnchor(null);
+  };
+
+  const handleNotificationClick = (event) => {
+    setNotificationAnchor(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchor(null);
   };
 
   const handleLanguageSelect = (langCode) => {
@@ -297,6 +308,7 @@ const Layout = ({ children }) => {
             {/* Notifications */}
             <Tooltip title="Notifications">
               <IconButton 
+                onClick={handleNotificationClick}
                 sx={{ 
                   '&:hover': { backgroundColor: 'rgba(102, 126, 234, 0.08)' },
                   color: 'text.secondary'
@@ -457,6 +469,77 @@ const Layout = ({ children }) => {
           {children}
         </Box>
       </Box>
+
+      {/* Notifications Menu */}
+      <Menu
+        anchorEl={notificationAnchor}
+        open={Boolean(notificationAnchor)}
+        onClose={handleNotificationClose}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.12)',
+            border: '1px solid rgba(0, 0, 0, 0.05)',
+            minWidth: 320,
+            maxWidth: 400
+          }
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            {t('common.notifications')}
+          </Typography>
+          <Box sx={{ maxHeight: 300, overflowY: 'auto' }}>
+            <MenuItem onClick={handleNotificationClose}>
+              <ListItemIcon>
+                <Badge color="primary" variant="dot">
+                  <Notifications fontSize="small" />
+                </Badge>
+              </ListItemIcon>
+              <Box>
+                <Typography variant="body2">
+                  {t('notifications.newUser')}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {t('notifications.timeAgo', { time: '5 min' })}
+                </Typography>
+              </Box>
+            </MenuItem>
+            <MenuItem onClick={handleNotificationClose}>
+              <ListItemIcon>
+                <Badge color="success" variant="dot">
+                  <CheckCircle fontSize="small" />
+                </Badge>
+              </ListItemIcon>
+              <Box>
+                <Typography variant="body2">
+                  {t('notifications.systemUpdate')}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {t('notifications.timeAgo', { time: '1 hour' })}
+                </Typography>
+              </Box>
+            </MenuItem>
+            <MenuItem onClick={handleNotificationClose}>
+              <ListItemIcon>
+                <Badge color="warning" variant="dot">
+                  <Warning fontSize="small" />
+                </Badge>
+              </ListItemIcon>
+              <Box>
+                <Typography variant="body2">
+                  {t('notifications.reminder')}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {t('notifications.timeAgo', { time: '2 hours' })}
+                </Typography>
+              </Box>
+            </MenuItem>
+          </Box>
+        </Box>
+      </Menu>
     </Box>
   );
 };
