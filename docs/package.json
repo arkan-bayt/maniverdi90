@@ -1,0 +1,10 @@
+{
+  "name": "maniverdi-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "serve -s .",
+    "build": "echo 'Already built'",
+    "dev": "serve -s ."
+  }
+}

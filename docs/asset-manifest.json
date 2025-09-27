@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/maniverdi90/static/css/main.d7803118.css",
+    "main.js": "/maniverdi90/static/js/main.026944f3.js",
+    "index.html": "/maniverdi90/index.html",
+    "main.d7803118.css.map": "/maniverdi90/static/css/main.d7803118.css.map",
+    "main.026944f3.js.map": "/maniverdi90/static/js/main.026944f3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d7803118.css",
+    "static/js/main.026944f3.js"
+  ]
+}
